@@ -6,19 +6,20 @@
 package pe.gob.sunat.jmarket.dao;
 
 import java.util.List;
-import pe.gob.sunat.jmarket.model.Compra;
+import pe.gob.sunat.jmarket.model.Persona;
+import pe.gob.sunat.jmarket.model.Usuario;
 
 /**
- * @author Anthony Ponte
+ * @author anthonyponte
  */
-public interface CompraDao {
-  void create(Compra compra);
+public interface PersonaDao {
+  Long create(Persona persona);
 
-  Compra read(Long id);
+  Usuario read(Long id);
 
-  List<Compra> read();
+  List<Persona> read();
 
-  void update(Compra compra);
+  void update(Persona persona);
 
   void delete(Long id);
 }

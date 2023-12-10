@@ -8,9 +8,10 @@ package pe.gob.sunat.jmarket.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,8 +29,7 @@ import pe.gob.sunat.jmarket.idao.IUsuarioDao;
  * @author Anthony Ponte
  */
 public class LoginController implements Initializable {
-
-  @FXML private TextField txtUsuario;
+  @FXML private TextField txtNombreUsuario;
   @FXML private PasswordField txtContrasena;
   @FXML private Button btnEntrar;
   private UsuarioDao dao;
@@ -47,8 +47,14 @@ public class LoginController implements Initializable {
             Stage stage = (Stage) btnEntrar.getScene().getWindow();
             stage.close();
 
-            App.setScene(stage, "MainView", "JMarket", true);
+            Parent parent = App.loadFXML("MainView").load();
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.setTitle("JMarket");
+            stage.setResizable(true);
+            stage.show();
           } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
           }
         });
   }

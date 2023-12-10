@@ -8,11 +8,16 @@ package pe.gob.sunat.jmarket.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import pe.gob.sunat.jmarket.App;
 
 /**
  * FXML Controller class
@@ -21,18 +26,32 @@ import javafx.stage.Stage;
  */
 public class MainController implements Initializable {
 
+  @FXML private BorderPane bpMain;
+  @FXML private Button btnUsuario;
+
   /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    btnUsuario.setOnAction(
+        (ActionEvent t) -> {
+          try {
+            FXMLLoader fxmlLoader = App.loadFXML("UsuarioView");
+            Parent parent = fxmlLoader.load();
+            fxmlLoader.<UsuarioController>getController();
+            
+            bpMain.setCenter(parent);
+          } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
   }
 
-  private void setRoot() throws IOException {
-    Stage stage = new Stage();
-    Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
-    Scene scene = new Scene(root);
-    stage.setScene(scene);
-    stage.setTitle("JMarket");
-    stage.show();
+  private void setParent(String fxml) {
+    try {
+      Parent parent = App.loadFXML(fxml).load();
+      bpMain.setCenter(parent);
+    } catch (IOException ex) {
+      Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 }

@@ -10,17 +10,26 @@ package pe.gob.sunat.jmarket.model;
  */
 public class Usuario {
   private Long id;
-  private String usuario;
+  private String nombreUsuario;
   private String contrasena;
   private int estado;
+  private Persona persona;
 
   public Usuario() {}
 
-  public Usuario(Long id, String usuario, String contrasena, int estado) {
+  public Usuario(Long id, String nombreUsuario, String contrasena, int estado, Persona persona) {
     this.id = id;
-    this.usuario = usuario;
+    this.nombreUsuario = nombreUsuario;
     this.contrasena = contrasena;
     this.estado = estado;
+    this.persona = persona;
+  }
+
+  public Usuario(String nombreUsuario, String contrasena, int estado, Persona persona) {
+    this.nombreUsuario = nombreUsuario;
+    this.contrasena = contrasena;
+    this.estado = estado;
+    this.persona = persona;
   }
 
   public Long getId() {
@@ -31,12 +40,12 @@ public class Usuario {
     this.id = id;
   }
 
-  public String getUsuario() {
-    return usuario;
+  public String getNombreUsuario() {
+    return nombreUsuario;
   }
 
-  public void setUsuario(String usuario) {
-    this.usuario = usuario;
+  public void setNombreUsuario(String nombreUsuario) {
+    this.nombreUsuario = nombreUsuario;
   }
 
   public String getContrasena() {
@@ -55,17 +64,27 @@ public class Usuario {
     this.estado = estado;
   }
 
+  public Persona getPersona() {
+    return persona;
+  }
+
+  public void setPersona(Persona persona) {
+    this.persona = persona;
+  }
+
   @Override
   public String toString() {
     return "Usuario{"
         + "id="
         + id
-        + ", usuario="
-        + usuario
+        + ", nombreUsuario="
+        + nombreUsuario
         + ", contrasena="
         + contrasena
         + ", estado="
         + estado
+        + ", persona="
+        + persona
         + '}';
   }
 }

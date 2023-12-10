@@ -8,40 +8,44 @@ package pe.gob.sunat.jmarket.idao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import pe.gob.sunat.jmarket.dao.UsuarioDao;
+import pe.gob.sunat.jmarket.dao.PersonaDao;
+import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.Usuario;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
 /**
- * @author Anthony Ponte
+ * @author anthonyponte
  */
-public class IUsuarioDao implements UsuarioDao {
+public class IPersonaDao implements PersonaDao {
   private final MyHsqldbConnection database;
 
-  public IUsuarioDao() {
+  public IPersonaDao() {
     this.database = new MyHsqldbConnection();
   }
 
   @Override
-  public Long create(Usuario usuario) {
+  public Long create(Persona persona) {
     Long id = 0L;
 
     database.connect();
 
     String query =
-        "INSERT INTO USUARIO (NOMBRE_USUARIO, CONTRASENA, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?)";
+        "INSERT INTO PERSONA (TIPO_DOCUMENTO, NUMERO_DOCUMENTO, PRIMER_NOMBRE, SEGUNDO_NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, ESTADO) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement ps =
         database.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setString(1, usuario.getNombreUsuario());
-      ps.setString(2, usuario.getContrasena());
-      ps.setInt(3, usuario.getEstado());
-      ps.setLong(4, usuario.getPersona().getId());
+      ps.setInt(1, persona.getTipoDocumento());
+      ps.setString(2, persona.getNumeroDocumento());
+      ps.setString(3, persona.getPrimerNombre());
+      ps.setString(4, persona.getSegundoNombre());
+      ps.setString(5, persona.getApellidoPaterno());
+      ps.setString(6, persona.getApellidoMaterno());
+      ps.setInt(7, persona.getEstado());
       ps.executeUpdate();
 
       try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -51,7 +55,7 @@ public class IUsuarioDao implements UsuarioDao {
       }
 
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(IPersonaDao.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -66,35 +70,13 @@ public class IUsuarioDao implements UsuarioDao {
   }
 
   @Override
-  public List<Usuario> read() {
-    List<Usuario> list = new ArrayList<>();
-
-    database.connect();
-
-    String query = "SELECT ID, NOMBRE_USUARIO, CONTRASENA, ESTADO FROM USUARIO ORDER BY ID DESC";
-
-    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          Usuario usuario = new Usuario();
-          usuario.setId(rs.getLong(1));
-          usuario.setNombreUsuario(rs.getString(2));
-          usuario.setContrasena(rs.getString(3));
-          usuario.setEstado(rs.getInt(4));
-          list.add(usuario);
-        }
-      }
-    } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
-    }
-
-    database.disconnect();
-
-    return list;
+  public List<Persona> read() {
+    throw new UnsupportedOperationException("Not supported yet."); // Generated from
+    // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 
   @Override
-  public void update(Usuario usuario) {
+  public void update(Persona persona) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
