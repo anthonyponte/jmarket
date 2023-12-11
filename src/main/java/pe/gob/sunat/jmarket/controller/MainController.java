@@ -16,8 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import pe.gob.sunat.jmarket.App;
+import pe.gob.sunat.jmarket.model.Usuario;
 
 /**
  * FXML Controller class
@@ -25,7 +27,7 @@ import pe.gob.sunat.jmarket.App;
  * @author Anthony Ponte
  */
 public class MainController implements Initializable {
-
+  @FXML private Label lblNombreUsuario;
   @FXML private BorderPane bpMain;
   @FXML private Button btnUsuario;
 
@@ -38,7 +40,7 @@ public class MainController implements Initializable {
             FXMLLoader fxmlLoader = App.loadFXML("UsuarioView");
             Parent parent = fxmlLoader.load();
             fxmlLoader.<UsuarioController>getController();
-            
+
             bpMain.setCenter(parent);
           } catch (IOException ex) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,12 +48,7 @@ public class MainController implements Initializable {
         });
   }
 
-  private void setParent(String fxml) {
-    try {
-      Parent parent = App.loadFXML(fxml).load();
-      bpMain.setCenter(parent);
-    } catch (IOException ex) {
-      Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-    }
+  public void setUsuario(Usuario usuario) {
+    lblNombreUsuario.setText(usuario.getNombreUsuario());
   }
 }

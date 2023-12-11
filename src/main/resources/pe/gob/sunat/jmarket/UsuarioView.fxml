@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="10.0" prefHeight="600.0" prefWidth="650.0" style="-fx-background-color: #FAFAFA;" vgap="10.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.UsuarioController">
+<GridPane hgap="10.0" prefHeight="533.0" prefWidth="650.0" vgap="10.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.UsuarioController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
@@ -20,9 +20,14 @@
       <Button fx:id="btnAgregar" mnemonicParsing="false" prefWidth="100.0" text="Agregar" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
       <TableView fx:id="tblUsuario" GridPane.rowIndex="1">
         <columns>
-          <TableColumn prefWidth="75.0" text="#" />
-            <TableColumn prefWidth="75.0" text="Nombre de usuario" />
-            <TableColumn prefWidth="75.0" text="Contraseña" />
+            <TableColumn fx:id="tcNombreUsuario" prefWidth="75.0" text="Nombre de usuario" />
+            <TableColumn fx:id="tcEstado" prefWidth="75.0" text="Estado" />
+            <TableColumn fx:id="tcTipoDocumento" prefWidth="75.0" text="Tipo de documento" />
+            <TableColumn fx:id="tcNumeroDocumento" prefWidth="75.0" text="Numero de documento" />
+            <TableColumn fx:id="tcPrimerNombre" prefWidth="75.0" text="Primer nombre" />
+            <TableColumn fx:id="tcSegundoNombre" prefWidth="75.0" text="Segundo nombre" />
+            <TableColumn fx:id="tcApellidoPaterno" prefWidth="75.0" text="Apellido paterno" />
+            <TableColumn fx:id="tcApellidoMaterno" prefWidth="75.0" text="Apellido materno" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

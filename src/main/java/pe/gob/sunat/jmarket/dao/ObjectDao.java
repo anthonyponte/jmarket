@@ -5,11 +5,19 @@
 
 package pe.gob.sunat.jmarket.dao;
 
-import pe.gob.sunat.jmarket.model.Usuario;
+import java.util.List;
 
 /**
- * @author Anthony Ponte
+ * @author anthonyponte
  */
-public interface UsuarioDao extends ObjectDao<Usuario> {
-  Long validate(String nombreUsuario, String contrasena);
+public interface ObjectDao<O> {
+  Long create(O o);
+
+  O read(Long id);
+
+  List<O> read();
+
+  void update(O o);
+
+  void delete(Long id);
 }

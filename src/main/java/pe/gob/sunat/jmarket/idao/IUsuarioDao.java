@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
+import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.Usuario;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
@@ -33,15 +34,16 @@ public class IUsuarioDao implements UsuarioDao {
     database.connect();
 
     String query =
-        "INSERT INTO USUARIO (NOMBRE_USUARIO, CONTRASENA, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?)";
+        "INSERT INTO USUARIO (TIPO_USUARIO, NOMBRE_USUARIO, CONTRASENA, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?, ?)";
 
     try (PreparedStatement ps =
         database.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setString(1, usuario.getNombreUsuario());
-      ps.setString(2, usuario.getContrasena());
-      ps.setInt(3, usuario.getEstado());
-      ps.setLong(4, usuario.getPersona().getId());
+      ps.setInt(1, usuario.getTipoUsuario());
+      ps.setString(2, usuario.getNombreUsuario());
+      ps.setString(3, usuario.getContrasena());
+      ps.setInt(4, usuario.getEstado());
+      ps.setLong(5, usuario.getPersona().getId());
       ps.executeUpdate();
 
       try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -61,8 +63,47 @@ public class IUsuarioDao implements UsuarioDao {
 
   @Override
   public Usuario read(Long id) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from
-    // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    Usuario usuario = null;
+
+    database.connect();
+
+    String query =
+        "SELECT A.ID, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
+            + "B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+            + "FROM USUARIO A "
+            + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
+            + "WHERE A.ID = ? "
+            + "ORDER BY A.ID DESC";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setLong(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          usuario = new Usuario();
+          usuario.setId(rs.getLong(1));
+          usuario.setNombreUsuario(rs.getString(2));
+          usuario.setContrasena(rs.getString(3));
+          usuario.setEstado(rs.getInt(4));
+
+          Persona persona = new Persona();
+          persona.setTipoDocumento(rs.getInt(5));
+          persona.setNumeroDocumento(rs.getString(6));
+          persona.setPrimerNombre(rs.getString(7));
+          persona.setSegundoNombre(rs.getString(8));
+          persona.setApellidoPaterno(rs.getString(9));
+          persona.setApellidoMaterno(rs.getString(10));
+          persona.setEstado(rs.getInt(11));
+
+          usuario.setPersona(persona);
+        }
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
+
+    return usuario;
   }
 
   @Override
@@ -71,7 +112,12 @@ public class IUsuarioDao implements UsuarioDao {
 
     database.connect();
 
-    String query = "SELECT ID, NOMBRE_USUARIO, CONTRASENA, ESTADO FROM USUARIO ORDER BY ID DESC";
+    String query =
+        "SELECT A.ID, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
+            + "B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+            + "FROM USUARIO A "
+            + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
+            + "ORDER BY A.ID DESC";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       try (ResultSet rs = ps.executeQuery()) {
@@ -81,6 +127,18 @@ public class IUsuarioDao implements UsuarioDao {
           usuario.setNombreUsuario(rs.getString(2));
           usuario.setContrasena(rs.getString(3));
           usuario.setEstado(rs.getInt(4));
+
+          Persona persona = new Persona();
+          persona.setTipoDocumento(rs.getInt(5));
+          persona.setNumeroDocumento(rs.getString(6));
+          persona.setPrimerNombre(rs.getString(7));
+          persona.setSegundoNombre(rs.getString(8));
+          persona.setApellidoPaterno(rs.getString(9));
+          persona.setApellidoMaterno(rs.getString(10));
+          persona.setEstado(rs.getInt(11));
+
+          usuario.setPersona(persona);
+
           list.add(usuario);
         }
       }
@@ -103,5 +161,31 @@ public class IUsuarioDao implements UsuarioDao {
   public void delete(Long id) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+  }
+
+  @Override
+  public Long validate(String nombreUsuario, String contrasena) {
+    Long id = 0L;
+
+    database.connect();
+
+    String query = "SELECT ID FROM USUARIO WHERE NOMBRE_USUARIO = ? AND CONTRASENA = ?";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setString(1, nombreUsuario);
+      ps.setString(2, contrasena);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          id = rs.getLong(1);
+        }
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
+
+    return id;
   }
 }

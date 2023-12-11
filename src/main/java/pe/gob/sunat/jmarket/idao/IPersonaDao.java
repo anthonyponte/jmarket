@@ -64,7 +64,7 @@ public class IPersonaDao implements PersonaDao {
   }
 
   @Override
-  public Usuario read(Long id) {
+  public Persona read(Long id) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
@@ -85,5 +85,40 @@ public class IPersonaDao implements PersonaDao {
   public void delete(Long id) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+  }
+
+  @Override
+  public Persona read(String numeroDocumento) {
+    Persona persona = null;
+
+    database.connect();
+
+    String query =
+        "SELECT ID, TIPO_DOCUMENTO, NUMERO_DOCUMENTO, PRIMER_NOMBRE, SEGUNDO_NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, ESTADO "
+            + "FROM PERSONA "
+            + "WHERE NUMERO_DOCUMENTO = ?";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setString(1, numeroDocumento);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          persona = new Persona();
+          persona.setId(rs.getLong(1));
+          persona.setTipoDocumento(rs.getInt(5));
+          persona.setNumeroDocumento(rs.getString(6));
+          persona.setPrimerNombre(rs.getString(7));
+          persona.setSegundoNombre(rs.getString(8));
+          persona.setApellidoPaterno(rs.getString(9));
+          persona.setApellidoMaterno(rs.getString(10));
+          persona.setEstado(rs.getInt(11));
+        }
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(IPersonaDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
+
+    return persona;
   }
 }

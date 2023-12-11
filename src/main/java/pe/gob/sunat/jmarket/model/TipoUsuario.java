@@ -1,6 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
 package pe.gob.sunat.jmarket.model;
@@ -8,13 +8,14 @@ package pe.gob.sunat.jmarket.model;
 /**
  * @author anthonyponte
  */
-public enum TipoDocumento {
-  DNI(0, "DNI");
+public enum TipoUsuario {
+  ADMINISTRADOR(0, "Administrador"),
+  CLIENTE(1, "Cliente");
 
   private final int codigo;
   private final String descripcion;
 
-  TipoDocumento(int codigo, String descripcion) {
+  TipoUsuario(int codigo, String descripcion) {
     this.codigo = codigo;
     this.descripcion = descripcion;
   }

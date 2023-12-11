@@ -13,10 +13,11 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    Parent parent = loadFXML("LoginView").load();
+    FXMLLoader fxmlLoader = App.loadFXML("LoginView");
+    Parent parent = fxmlLoader.load();
     Scene scene = new Scene(parent);
     stage.setScene(scene);
-    stage.setTitle("JMarkey");
+    stage.setTitle("JMarket");
     stage.setResizable(false);
     stage.show();
   }
