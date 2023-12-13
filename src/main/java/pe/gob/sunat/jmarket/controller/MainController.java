@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.model.Usuario;
@@ -27,14 +28,15 @@ import pe.gob.sunat.jmarket.model.Usuario;
  * @author Anthony Ponte
  */
 public class MainController implements Initializable {
-  @FXML private Label lblNombreUsuario;
   @FXML private BorderPane bpMain;
-  @FXML private Button btnUsuario;
+  @FXML private MenuItem miUsuario;
+  @FXML private MenuItem miUsuarios;
+  @FXML private Label lblUsuario;
 
   /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    btnUsuario.setOnAction(
+    miUsuario.setOnAction(
         (ActionEvent t) -> {
           try {
             FXMLLoader fxmlLoader = App.loadFXML("UsuarioView");
@@ -46,9 +48,24 @@ public class MainController implements Initializable {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
           }
         });
+
+    miUsuarios.setOnAction(
+        (ActionEvent t) -> {
+          try {
+            FXMLLoader fxmlLoader = App.loadFXML("UsuarioTableView");
+            Parent parent = fxmlLoader.load();
+            fxmlLoader.<UsuarioTableController>getController();
+
+            bpMain.setCenter(parent);
+          } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
   }
 
   public void setUsuario(Usuario usuario) {
-    lblNombreUsuario.setText(usuario.getNombreUsuario());
+    String nombre =
+        usuario.getPersona().getPrimerNombre() + " " + usuario.getPersona().getApellidoPaterno();
+    lblUsuario.setText("Bienvenido " + nombre + " !");
   }
 }
