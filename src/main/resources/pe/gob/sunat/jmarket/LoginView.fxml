@@ -7,31 +7,26 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<Pane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.LoginController">
-   <children>
-      <GridPane hgap="10.0" vgap="10.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" />
-          <ColumnConstraints hgrow="SOMETIMES" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints vgrow="SOMETIMES" />
-          <RowConstraints vgrow="SOMETIMES" />
-          <RowConstraints vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <TextField fx:id="txtNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Nombre de usuario" GridPane.columnIndex="1" />
-            <PasswordField fx:id="txtContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Button fx:id="btnEntrar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Entrar" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-            <Label text="Nombre de usuario:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-            <Label text="Contraseña:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-         </children>
-         <padding>
-            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-         </padding>
-      </GridPane>
-   </children>
-</Pane>
+<GridPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.LoginController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" />
+        <ColumnConstraints hgrow="SOMETIMES" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES" />
+        <RowConstraints vgrow="SOMETIMES" />
+        <RowConstraints vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <Label text="Nombre Usuario:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+        <Label text="Contraseña:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <TextField fx:id="txtNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Nombre Usuario" GridPane.columnIndex="1" />
+        <PasswordField fx:id="txtContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Button fx:id="btnEntrar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Entrar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />        
+    </children>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</GridPane>

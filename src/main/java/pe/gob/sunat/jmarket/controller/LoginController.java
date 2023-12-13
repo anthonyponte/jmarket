@@ -20,6 +20,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
 import pe.gob.sunat.jmarket.idao.IUsuarioDao;
@@ -44,7 +46,7 @@ public class LoginController implements Initializable {
   /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    TextFieldFormat.toUpperCase(txtNombreUsuario);
+    initUI();
 
     btnEntrar.setOnAction(
         (ActionEvent t) -> {
@@ -75,5 +77,10 @@ public class LoginController implements Initializable {
             }
           }
         });
+  }
+
+  private void initUI() {
+    TextFieldFormat.toUpperCase(txtNombreUsuario);
+    btnEntrar.setGraphic(FontIcon.of(RemixiconAL.LOGIN_BOX_LINE, 16));
   }
 }

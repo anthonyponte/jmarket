@@ -16,9 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
+import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.model.Usuario;
 
@@ -29,33 +30,20 @@ import pe.gob.sunat.jmarket.model.Usuario;
  */
 public class MainController implements Initializable {
   @FXML private BorderPane bpMain;
-  @FXML private MenuItem miUsuario;
-  @FXML private MenuItem miUsuarios;
-  @FXML private Label lblUsuario;
+  @FXML private Button btnUsuario;
+  @FXML private Button btnProducto;
 
   /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    miUsuario.setOnAction(
+    initUI();
+
+    btnUsuario.setOnAction(
         (ActionEvent t) -> {
           try {
-            FXMLLoader fxmlLoader = App.loadFXML("UsuarioView");
-            Parent parent = fxmlLoader.load();
-            fxmlLoader.<UsuarioController>getController();
-
-            bpMain.setCenter(parent);
-          } catch (IOException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        });
-
-    miUsuarios.setOnAction(
-        (ActionEvent t) -> {
-          try {
-            FXMLLoader fxmlLoader = App.loadFXML("UsuarioTableView");
-            Parent parent = fxmlLoader.load();
-            fxmlLoader.<UsuarioTableController>getController();
-
+            FXMLLoader fXMLLoader = App.loadFXML("UsuarioView");
+            Parent parent = fXMLLoader.load();
+            fXMLLoader.<UsuarioController>getController();
             bpMain.setCenter(parent);
           } catch (IOException ex) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,9 +51,14 @@ public class MainController implements Initializable {
         });
   }
 
+  private void initUI() {
+    btnUsuario.setGraphic(FontIcon.of(RemixiconMZ.USER_LINE, 16));
+    btnProducto.setGraphic(FontIcon.of(RemixiconAL.BARCODE_BOX_LINE, 16));
+  }
+
   public void setUsuario(Usuario usuario) {
     String nombre =
         usuario.getPersona().getPrimerNombre() + " " + usuario.getPersona().getApellidoPaterno();
-    lblUsuario.setText("Bienvenido " + nombre + " !");
+    // lblUsuario.setText("Bienvenido " + nombre + " !");
   }
 }
