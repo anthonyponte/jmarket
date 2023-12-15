@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="459.0" prefWidth="737.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox layoutX="14.0" layoutY="14.0" prefHeight="147.0" prefWidth="707.0" style="-fx-border-style: solid; -fx-border-radius: 10px; -fx-border-color: gray;">
+         <children>
+            <VBox prefHeight="135.0" prefWidth="595.0">
+               <children>
+                  <GridPane prefHeight="68.0" prefWidth="595.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.0" minWidth="10.0" prefWidth="109.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="486.0" minWidth="10.0" prefWidth="486.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="52.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="112.0" text="Fecha de emisión: " />
+                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="112.0" text="Cliente: " GridPane.rowIndex="1" />
+                        <TextField prefHeight="25.0" prefWidth="377.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <HBox maxHeight="-Infinity" prefHeight="36.0" prefWidth="596.0" GridPane.columnIndex="1">
+                           <children>
+                              <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="410.0" text="Ticket:">
+                                 <font>
+                                    <Font size="27.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="228.0" text="000001">
+                                 <font>
+                                    <Font size="27.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <DatePicker editable="false" prefHeight="25.0" prefWidth="127.0" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="NEVER">
+               <children>
+                  <Button maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Guardar" />
+                  <Button maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Cancelar">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="14.0" layoutY="163.0" prefHeight="283.0" prefWidth="707.0" style="-fx-border-style: solid; -fx-border-radius: 10px; -fx-border-color: gray;">
+         <children>
+            <VBox prefHeight="270.0" prefWidth="662.0">
+               <children>
+                  <TableView maxHeight="-Infinity" prefHeight="300.0" VBox.vgrow="NEVER">
+                    <columns>
+                      <TableColumn editable="false" prefWidth="48.0" text="Nro" />
+                      <TableColumn prefWidth="250.0" text="Producto" />
+                        <TableColumn minWidth="0.0" prefWidth="77.0" text="Cantidad" />
+                        <TableColumn prefWidth="88.0" text="Precio Unit." />
+                        <TableColumn minWidth="0.0" prefWidth="131.0" text="Subtotal" />
+                    </columns>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </VBox.margin>
+                  </TableView>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Total: " />
+                        <TextField alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="138.0" text="0.00">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </TextField>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="281.0" prefWidth="153.0" HBox.hgrow="NEVER">
+               <children>
+                  <Button maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Agregar">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Button>
+                  <Button maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Eliminar">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button maxWidth="-Infinity" mnemonicParsing="false" prefWidth="80.0" text="Editar">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets top="35.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</Pane>
