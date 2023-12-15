@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.model.Persona;
-import pe.gob.sunat.jmarket.model.Usuario;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
 /**
@@ -83,8 +82,18 @@ public class IPersonaDao implements PersonaDao {
 
   @Override
   public void delete(Long id) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from
-    // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    database.connect();
+
+    String query = "DELETE FROM PERSONA WHERE ID = ?";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setLong(1, id);
+      ps.executeUpdate();
+    } catch (SQLException ex) {
+      Logger.getLogger(IPersonaDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
   }
 
   @Override

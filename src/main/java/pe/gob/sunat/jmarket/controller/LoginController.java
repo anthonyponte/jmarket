@@ -59,7 +59,7 @@ public class LoginController implements Initializable {
             try {
               Stage old = (Stage) btnEntrar.getScene().getWindow();
               old.close();
-
+              System.out.println("id " + id);
               Usuario usuario = dao.read(id);
               FXMLLoader fxmlLoader = App.loadFXML("MainView");
               Parent parent = fxmlLoader.load();

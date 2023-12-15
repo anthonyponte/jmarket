@@ -9,13 +9,13 @@ package pe.gob.sunat.jmarket.model;
  * @author anthonyponte
  */
 public enum TipoUsuario {
-  ADMINISTRADOR(0, "Administrador"),
-  CLIENTE(1, "Cliente");
+  ADMINISTRADOR(0, "ADMINISTRADOR"),
+  CLIENTE(1, "CLIENTE");
 
   private final int codigo;
   private final String descripcion;
 
-  TipoUsuario(int codigo, String descripcion) {
+  private TipoUsuario(int codigo, String descripcion) {
     this.codigo = codigo;
     this.descripcion = descripcion;
   }

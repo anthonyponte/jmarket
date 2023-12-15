@@ -10,7 +10,7 @@ package pe.gob.sunat.jmarket.model;
  */
 public class Usuario {
   private Long id;
-  private int TipoUsuario;
+  private int tipoUsuario;
   private String nombreUsuario;
   private String contrasena;
   private int estado;
@@ -20,13 +20,13 @@ public class Usuario {
 
   public Usuario(
       Long id,
-      int TipoUsuario,
+      int tipoUsuario,
       String nombreUsuario,
       String contrasena,
       int estado,
       Persona persona) {
     this.id = id;
-    this.TipoUsuario = TipoUsuario;
+    this.tipoUsuario = tipoUsuario;
     this.nombreUsuario = nombreUsuario;
     this.contrasena = contrasena;
     this.estado = estado;
@@ -34,8 +34,8 @@ public class Usuario {
   }
 
   public Usuario(
-      int TipoUsuario, String nombreUsuario, String contrasena, int estado, Persona persona) {
-    this.TipoUsuario = TipoUsuario;
+      int tipoUsuario, String nombreUsuario, String contrasena, int estado, Persona persona) {
+    this.tipoUsuario = tipoUsuario;
     this.nombreUsuario = nombreUsuario;
     this.contrasena = contrasena;
     this.estado = estado;
@@ -51,11 +51,11 @@ public class Usuario {
   }
 
   public int getTipoUsuario() {
-    return TipoUsuario;
+    return tipoUsuario;
   }
 
-  public void setTipoUsuario(int TipoUsuario) {
-    this.TipoUsuario = TipoUsuario;
+  public void setTipoUsuario(int tipoUsuario) {
+    this.tipoUsuario = tipoUsuario;
   }
 
   public String getNombreUsuario() {
@@ -95,8 +95,8 @@ public class Usuario {
     return "Usuario{"
         + "id="
         + id
-        + ", TipoUsuario="
-        + TipoUsuario
+        + ", tipoUsuario="
+        + tipoUsuario
         + ", nombreUsuario="
         + nombreUsuario
         + ", contrasena="

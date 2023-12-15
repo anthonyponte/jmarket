@@ -14,7 +14,7 @@ public enum TipoDocumento {
   private final int codigo;
   private final String descripcion;
 
-  TipoDocumento(int codigo, String descripcion) {
+  private TipoDocumento(int codigo, String descripcion) {
     this.codigo = codigo;
     this.descripcion = descripcion;
   }

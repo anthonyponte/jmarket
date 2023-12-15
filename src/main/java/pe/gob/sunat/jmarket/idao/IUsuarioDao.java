@@ -68,8 +68,8 @@ public class IUsuarioDao implements UsuarioDao {
     database.connect();
 
     String query =
-        "SELECT A.ID, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
-            + "B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
+            + "B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
             + "FROM USUARIO A "
             + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
             + "WHERE A.ID = ? "
@@ -81,18 +81,20 @@ public class IUsuarioDao implements UsuarioDao {
         while (rs.next()) {
           usuario = new Usuario();
           usuario.setId(rs.getLong(1));
-          usuario.setNombreUsuario(rs.getString(2));
-          usuario.setContrasena(rs.getString(3));
-          usuario.setEstado(rs.getInt(4));
+          usuario.setTipoUsuario(rs.getInt(2));
+          usuario.setNombreUsuario(rs.getString(3));
+          usuario.setContrasena(rs.getString(4));
+          usuario.setEstado(rs.getInt(5));
 
           Persona persona = new Persona();
-          persona.setTipoDocumento(rs.getInt(5));
-          persona.setNumeroDocumento(rs.getString(6));
-          persona.setPrimerNombre(rs.getString(7));
-          persona.setSegundoNombre(rs.getString(8));
-          persona.setApellidoPaterno(rs.getString(9));
-          persona.setApellidoMaterno(rs.getString(10));
-          persona.setEstado(rs.getInt(11));
+          persona.setId(rs.getLong(6));
+          persona.setTipoDocumento(rs.getInt(7));
+          persona.setNumeroDocumento(rs.getString(8));
+          persona.setPrimerNombre(rs.getString(9));
+          persona.setSegundoNombre(rs.getString(10));
+          persona.setApellidoPaterno(rs.getString(11));
+          persona.setApellidoMaterno(rs.getString(12));
+          persona.setEstado(rs.getInt(13));
 
           usuario.setPersona(persona);
         }
@@ -113,8 +115,8 @@ public class IUsuarioDao implements UsuarioDao {
     database.connect();
 
     String query =
-        "SELECT A.ID, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
-            + "B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
+            + "B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
             + "FROM USUARIO A "
             + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
             + "ORDER BY A.ID DESC";
@@ -124,18 +126,20 @@ public class IUsuarioDao implements UsuarioDao {
         while (rs.next()) {
           Usuario usuario = new Usuario();
           usuario.setId(rs.getLong(1));
-          usuario.setNombreUsuario(rs.getString(2));
-          usuario.setContrasena(rs.getString(3));
-          usuario.setEstado(rs.getInt(4));
+          usuario.setTipoUsuario(rs.getInt(2));
+          usuario.setNombreUsuario(rs.getString(3));
+          usuario.setContrasena(rs.getString(4));
+          usuario.setEstado(rs.getInt(5));
 
           Persona persona = new Persona();
-          persona.setTipoDocumento(rs.getInt(5));
-          persona.setNumeroDocumento(rs.getString(6));
-          persona.setPrimerNombre(rs.getString(7));
-          persona.setSegundoNombre(rs.getString(8));
-          persona.setApellidoPaterno(rs.getString(9));
-          persona.setApellidoMaterno(rs.getString(10));
-          persona.setEstado(rs.getInt(11));
+          persona.setId(rs.getLong(6));
+          persona.setTipoDocumento(rs.getInt(7));
+          persona.setNumeroDocumento(rs.getString(8));
+          persona.setPrimerNombre(rs.getString(9));
+          persona.setSegundoNombre(rs.getString(10));
+          persona.setApellidoPaterno(rs.getString(11));
+          persona.setApellidoMaterno(rs.getString(12));
+          persona.setEstado(rs.getInt(13));
 
           usuario.setPersona(persona);
 
@@ -153,14 +157,39 @@ public class IUsuarioDao implements UsuarioDao {
 
   @Override
   public void update(Usuario usuario) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from
-    // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    database.connect();
+
+    String query =
+        "UPDATE USUARIO SET TIPO_USUARIO = ?, NOMBRE_USUARIO = ?, CONTRASENA = ? WHERE ID = ?";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setInt(1, usuario.getTipoUsuario());
+      ps.setString(2, usuario.getNombreUsuario());
+      ps.setString(3, usuario.getContrasena());
+      ps.setLong(4, usuario.getId());
+
+      ps.executeUpdate();
+    } catch (SQLException ex) {
+      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
   }
 
   @Override
   public void delete(Long id) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from
-    // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    database.connect();
+
+    String query = "DELETE FROM USUARIO WHERE ID = ?";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setLong(1, id);
+      ps.executeUpdate();
+    } catch (SQLException ex) {
+      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
   }
 
   @Override

@@ -5,6 +5,9 @@
 
 package pe.gob.sunat.jmarket.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * @author anthonyponte
  */
@@ -15,7 +18,7 @@ public enum Estado {
   private final int codigo;
   private final String descripcion;
 
-  Estado(int codigo, String descripcion) {
+  private Estado(int codigo, String descripcion) {
     this.codigo = codigo;
     this.descripcion = descripcion;
   }
@@ -25,6 +28,11 @@ public enum Estado {
   }
 
   public String getDescripcion() {
+    return descripcion;
+  }
+
+  @Override
+  public String toString() {
     return descripcion;
   }
 }
