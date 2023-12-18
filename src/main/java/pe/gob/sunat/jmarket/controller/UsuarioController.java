@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,14 +27,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
@@ -49,11 +53,13 @@ import pe.gob.sunat.jmarket.model.Usuario;
  * @author anthonyponte
  */
 public class UsuarioController implements Initializable {
+  @FXML private Label lblTitulo;
+  @FXML private TextField txtFiltro;
   @FXML private Button btnRefrescar;
   @FXML private Button btnAgregar;
-  @FXML private TableView<Usuario> tblUsuario;
-  @FXML private TableColumn<Usuario, String> tcNombreUsuario;
+  @FXML private TableView<Usuario> table;
   @FXML private TableColumn<Usuario, String> tcTipoUsuario;
+  @FXML private TableColumn<Usuario, String> tcNombreUsuario;
   @FXML private TableColumn<Usuario, String> tcEstado;
   @FXML private TableColumn<Usuario, String> tcTipoDocumento;
   @FXML private TableColumn<Usuario, String> tcNumeroDocumento;
@@ -73,6 +79,66 @@ public class UsuarioController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     initUI();
+    FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
+
+    txtFiltro
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              filteredList.setPredicate(
+                  usuario -> {
+                    if (newValue == null || newValue.isEmpty()) {
+                      return true;
+                    }
+
+                    String lowerCaseFilter = newValue.toLowerCase();
+
+                    if (TipoUsuario.values()[usuario.getTipoUsuario()]
+                        .getDescripcion()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario.getNombreUsuario().toLowerCase().contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (TipoDocumento.values()[usuario.getPersona().getTipoDocumento()]
+                        .getDescripcion()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario
+                        .getPersona()
+                        .getNumeroDocumento()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario
+                        .getPersona()
+                        .getPrimerNombre()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario
+                        .getPersona()
+                        .getSegundoNombre()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario
+                        .getPersona()
+                        .getApellidoPaterno()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (usuario
+                        .getPersona()
+                        .getApellidoMaterno()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    }
+                    return false;
+                  });
+            });
 
     tcNombreUsuario.setCellValueFactory(
         c -> new SimpleStringProperty(c.getValue().getNombreUsuario()));
@@ -113,14 +179,25 @@ public class UsuarioController implements Initializable {
           observableList.setAll(list);
         });
 
-    tblUsuario.setRowFactory(
+    btnAgregar.setOnAction(
+        (ActionEvent t) -> {
+          try {
+            FXMLLoader fxmlLoader = App.loadFXML("UsuarioDialog");
+            Stage stage = getStage(fxmlLoader);
+            stage.showAndWait();
+          } catch (IOException ex) {
+            Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
+
+    table.setRowFactory(
         tv -> {
           TableRow<Usuario> tlUsuario = new TableRow<>();
           tlUsuario.setOnMouseClicked(
               event -> {
                 if (event.getClickCount() == 2 && (!tlUsuario.isEmpty())) {
                   try {
-                    Usuario usuario = tblUsuario.getSelectionModel().getSelectedItem();
+                    Usuario usuario = table.getSelectionModel().getSelectedItem();
                     FXMLLoader fxmlLoader = App.loadFXML("UsuarioDialog");
                     Stage stage = getStage(fxmlLoader);
                     UsuarioDialogController controller =
@@ -135,7 +212,7 @@ public class UsuarioController implements Initializable {
           return tlUsuario;
         });
 
-    tblUsuario.setOnKeyPressed(
+    table.setOnKeyPressed(
         new EventHandler<KeyEvent>() {
           @Override
           public void handle(KeyEvent event) {
@@ -147,38 +224,28 @@ public class UsuarioController implements Initializable {
 
               Optional<ButtonType> result = alert.showAndWait();
               if (result.get() == ButtonType.OK) {
-                Usuario usuario = (Usuario) tblUsuario.getSelectionModel().getSelectedItem();
+                Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
                 dao.delete(usuario.getId());
-
-                setList();
+                observableList.remove(usuario);
               }
             }
           }
         });
 
-    btnAgregar.setOnAction(
-        (ActionEvent t) -> {
-          try {
-            FXMLLoader fxmlLoader = App.loadFXML("UsuarioDialog");
-            Stage stage = getStage(fxmlLoader);
-            stage.showAndWait();
-          } catch (IOException ex) {
-            Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        });
+    table.setItems(filteredList);
+    setList();
   }
 
   private void initUI() {
+    lblTitulo.setGraphic(FontIcon.of(RemixiconMZ.USER_LINE, 32));
     btnRefrescar.setGraphic(FontIcon.of(RemixiconMZ.REFRESH_LINE, 16));
-    btnAgregar.setGraphic(FontIcon.of(RemixiconMZ.USER_ADD_LINE, 16));
-
-    setList();
+    btnAgregar.setGraphic(FontIcon.of(RemixiconAL.ADD_LINE, 16));
   }
 
   private void setList() {
     List<Usuario> list = dao.read();
+    observableList.clear();
     observableList.setAll(list);
-    tblUsuario.setItems(observableList);
   }
 
   private Stage getStage(FXMLLoader fxmlLoader) {

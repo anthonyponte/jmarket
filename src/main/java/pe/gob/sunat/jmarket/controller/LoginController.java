@@ -16,6 +16,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -26,7 +28,7 @@ import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
 import pe.gob.sunat.jmarket.idao.IUsuarioDao;
 import pe.gob.sunat.jmarket.model.Usuario;
-import pe.gob.sunat.jmarket.util.TextFieldFormat;
+import pe.gob.sunat.jmarket.util.MyTextFieldFormat;
 
 /**
  * FXML Controller class
@@ -53,13 +55,30 @@ public class LoginController implements Initializable {
           String nombreUsuario = txtNombreUsuario.getText().toUpperCase();
           String contrasena = txtContrasena.getText();
 
+          if (nombreUsuario.equals("")) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Usuario vacio");
+            alert.show();
+            return;
+          }
+
+          if (contrasena.equals("")) {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Contraseña vacia");
+            alert.show();
+            return;
+          }
+
           Long id = dao.validate(nombreUsuario, contrasena);
 
           if (id > 0) {
             try {
               Stage old = (Stage) btnEntrar.getScene().getWindow();
               old.close();
-              System.out.println("id " + id);
               Usuario usuario = dao.read(id);
               FXMLLoader fxmlLoader = App.loadFXML("MainView");
               Parent parent = fxmlLoader.load();
@@ -75,12 +94,18 @@ public class LoginController implements Initializable {
             } catch (IOException ex) {
               Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
             }
+          } else {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Usuario o contraseña incorrecto");
+            alert.show();
           }
         });
   }
 
   private void initUI() {
-    TextFieldFormat.toUpperCase(txtNombreUsuario);
+    MyTextFieldFormat.toUpperCase(txtNombreUsuario);
     btnEntrar.setGraphic(FontIcon.of(RemixiconAL.LOGIN_BOX_LINE, 16));
   }
 }

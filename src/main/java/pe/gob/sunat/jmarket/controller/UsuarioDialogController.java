@@ -28,7 +28,7 @@ import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.TipoDocumento;
 import pe.gob.sunat.jmarket.model.TipoUsuario;
 import pe.gob.sunat.jmarket.model.Usuario;
-import pe.gob.sunat.jmarket.util.TextFieldFormat;
+import pe.gob.sunat.jmarket.util.MyTextFieldFormat;
 
 /**
  * FXML Controller class
@@ -106,7 +106,11 @@ public class UsuarioDialogController implements Initializable {
                   txtNombreUsuario.clear();
                   txtContrasena.clear();
 
-                  showAlert("Guardado", "Se guardo el registro correctamente");
+                  Alert alert = new Alert(AlertType.INFORMATION);
+                  alert.setTitle("Guardado");
+                  alert.setHeaderText(null);
+                  alert.setContentText("Se guardo el registro correctamente");
+                  alert.show();
                 }
               }
             } else {
@@ -116,7 +120,11 @@ public class UsuarioDialogController implements Initializable {
 
               usuarioDao.update(usuario);
 
-              showAlert("Actualizado", "Se actualizo el registro correctamente");
+              Alert alert = new Alert(AlertType.INFORMATION);
+              alert.setTitle("Actualizado");
+              alert.setHeaderText(null);
+              alert.setContentText("Se actualizo el registro correctamente");
+              alert.show();
             }
           }
         });
@@ -128,11 +136,13 @@ public class UsuarioDialogController implements Initializable {
     cbxTipoDocumento.getItems().addAll(TipoDocumento.values());
     cbxTipoUsuario.getItems().addAll(TipoUsuario.values());
 
-    TextFieldFormat.toUpperCase(txtPrimerNombre);
-    TextFieldFormat.toUpperCase(txtSegundoNombre);
-    TextFieldFormat.toUpperCase(txtApellidoPaterno);
-    TextFieldFormat.toUpperCase(txtApellidoMaterno);
-    TextFieldFormat.toUpperCase(txtNombreUsuario);
+    MyTextFieldFormat.toUpperCase(txtPrimerNombre);
+    MyTextFieldFormat.toUpperCase(txtSegundoNombre);
+    MyTextFieldFormat.toUpperCase(txtApellidoPaterno);
+    MyTextFieldFormat.toUpperCase(txtApellidoMaterno);
+    MyTextFieldFormat.toUpperCase(txtNombreUsuario);
+
+    cbxTipoDocumento.requestFocus();
   }
 
   public void setUsuario(Usuario usuario) {
@@ -144,23 +154,20 @@ public class UsuarioDialogController implements Initializable {
     txtSegundoNombre.setEditable(false);
     txtApellidoPaterno.setEditable(false);
     txtApellidoMaterno.setEditable(false);
+    cbxTipoUsuario.setDisable(false);
+    txtNombreUsuario.setEditable(true);
+    txtContrasena.setEditable(true);
 
-    cbxTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
-    txtNumeroDocumento.setText(usuario.getPersona().getNumeroDocumento());
-    txtPrimerNombre.setText(usuario.getPersona().getPrimerNombre());
-    txtSegundoNombre.setText(usuario.getPersona().getSegundoNombre());
-    txtApellidoPaterno.setText(usuario.getPersona().getApellidoPaterno());
-    txtApellidoMaterno.setText(usuario.getPersona().getApellidoMaterno());
-    cbxTipoUsuario.getSelectionModel().select(usuario.getTipoUsuario());
-    txtNombreUsuario.setText(usuario.getNombreUsuario());
-    txtContrasena.setText(usuario.getContrasena());
-  }
+    cbxTipoDocumento.getSelectionModel().select(this.usuario.getPersona().getTipoDocumento());
+    txtNumeroDocumento.setText(this.usuario.getPersona().getNumeroDocumento());
+    txtPrimerNombre.setText(this.usuario.getPersona().getPrimerNombre());
+    txtSegundoNombre.setText(this.usuario.getPersona().getSegundoNombre());
+    txtApellidoPaterno.setText(this.usuario.getPersona().getApellidoPaterno());
+    txtApellidoMaterno.setText(this.usuario.getPersona().getApellidoMaterno());
+    cbxTipoUsuario.getSelectionModel().select(this.usuario.getTipoUsuario());
+    txtNombreUsuario.setText(this.usuario.getNombreUsuario());
+    txtContrasena.setText(this.usuario.getContrasena());
 
-  private void showAlert(String titulo, String contenido) {
-    Alert alert = new Alert(AlertType.INFORMATION);
-    alert.setTitle(titulo);
-    alert.setHeaderText(null);
-    alert.setContentText(contenido);
-    alert.show();
+    cbxTipoUsuario.requestFocus();
   }
 }

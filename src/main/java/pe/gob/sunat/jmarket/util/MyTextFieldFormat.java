@@ -11,7 +11,7 @@ import javafx.scene.control.TextFormatter;
 /**
  * @author anthonyponte
  */
-public class TextFieldFormat {
+public class MyTextFieldFormat {
   public static void toUpperCase(TextField textField) {
     textField.setTextFormatter(
         new TextFormatter<>(

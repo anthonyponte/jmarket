@@ -5,9 +5,6 @@
 
 package pe.gob.sunat.jmarket.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
-
 /**
  * @author anthonyponte
  */

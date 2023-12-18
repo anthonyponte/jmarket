@@ -15,7 +15,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
@@ -29,16 +30,20 @@ import pe.gob.sunat.jmarket.model.Usuario;
  * @author Anthony Ponte
  */
 public class MainController implements Initializable {
+  @FXML private Menu menu;
+  @FXML private MenuItem miUsuario;
+  @FXML private MenuItem miProducto;
   @FXML private BorderPane bpMain;
-  @FXML private Button btnUsuario;
-  @FXML private Button btnProducto;
+  @FXML private MenuItem miVenta;
+  @FXML private Menu menuUsuario;
+  @FXML private MenuItem miSalir;
 
   /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     initUI();
 
-    btnUsuario.setOnAction(
+    miUsuario.setOnAction(
         (ActionEvent t) -> {
           try {
             FXMLLoader fXMLLoader = App.loadFXML("UsuarioView");
@@ -49,16 +54,43 @@ public class MainController implements Initializable {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
           }
         });
+
+    miProducto.setOnAction(
+        (ActionEvent t) -> {
+          try {
+            FXMLLoader fXMLLoader = App.loadFXML("ProductoView");
+            Parent parent = fXMLLoader.load();
+            fXMLLoader.<ProductoController>getController();
+            bpMain.setCenter(parent);
+          } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
+
+    miVenta.setOnAction(
+        (ActionEvent t) -> {
+          try {
+            FXMLLoader fXMLLoader = App.loadFXML("VentaView");
+            Parent parent = fXMLLoader.load();
+            fXMLLoader.<ProductoController>getController();
+            bpMain.setCenter(parent);
+          } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+        });
   }
 
   private void initUI() {
-    btnUsuario.setGraphic(FontIcon.of(RemixiconMZ.USER_LINE, 16));
-    btnProducto.setGraphic(FontIcon.of(RemixiconAL.BARCODE_BOX_LINE, 16));
+    menu.setGraphic(FontIcon.of(RemixiconMZ.MENU_LINE, 16));
+    miUsuario.setGraphic(FontIcon.of(RemixiconMZ.USER_LINE, 16));
+    miProducto.setGraphic(FontIcon.of(RemixiconAL.BARCODE_BOX_LINE, 16));
+    miVenta.setGraphic(FontIcon.of(RemixiconAL.BILL_LINE, 16));
+    miSalir.setGraphic(FontIcon.of(RemixiconAL.LOGOUT_BOX_LINE, 16));
   }
 
   public void setUsuario(Usuario usuario) {
     String nombre =
         usuario.getPersona().getPrimerNombre() + " " + usuario.getPersona().getApellidoPaterno();
-    // lblUsuario.setText("Bienvenido " + nombre + " !");
+    menuUsuario.setText(nombre);
   }
 }
