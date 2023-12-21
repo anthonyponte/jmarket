@@ -47,4 +47,6 @@ buildNumber.properties
 .classpath
 .settings
 
+!hsqldb/bin/hsqldb.jar
+
 # End of https://www.toptal.com/developers/gitignore/api/java,maven
