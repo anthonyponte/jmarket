@@ -164,4 +164,38 @@ public class IProductoDao implements ProductoDao {
 
     database.disconnect();
   }
+
+  @Override
+  public Producto read(String codigo) {
+    Producto producto = null;
+
+    database.connect();
+
+    String query =
+        "SELECT ID, CODIGO, DESCRIPCION, UNIDAD_MEDIDA, PRECIO_UNITARIO, ESTADO "
+            + "FROM PRODUCTO "
+            + "WHERE CODIGO = ? "
+            + "ORDER BY ID DESC";
+
+    try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
+      ps.setString(1, codigo);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          producto = new Producto();
+          producto.setId(rs.getLong(1));
+          producto.setCodigo(rs.getString(2));
+          producto.setDescripcion(rs.getString(3));
+          producto.setUnidadMedida(rs.getInt(4));
+          producto.setPrecioUnitario(rs.getBigDecimal(5));
+          producto.setEstado(rs.getInt(6));
+        }
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+    database.disconnect();
+
+    return producto;
+  }
 }

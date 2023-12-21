@@ -5,11 +5,9 @@
 
 package pe.gob.sunat.jmarket.dao;
 
-import pe.gob.sunat.jmarket.model.Producto;
+import pe.gob.sunat.jmarket.model.Venta;
 
 /**
  * @author anthonyponte
  */
-public interface ProductoDao extends ObjectDao<Producto> {
-  Producto read(String codigo);
-}
+public interface VentaDao extends ObjectDao<Venta> {}

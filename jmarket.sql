@@ -69,4 +69,4 @@ ALTER TABLE
 ADD
 	CONSTRAINT VENTA_DETALLE_VENTA_FK FOREIGN KEY (VENTA_ID) REFERENCES VENTA(ID);
 
-java - classpath C: \ Users \ anthonyponte \ Downloads \ hsqldb -2.7.2 \ hsqldb \ lib \ hsqldb.jar org.hsqldb.server.Server --database.0 file:C:\Users\anthonyponte\Documents\NetBeansProjects\jmarket\hsqldb\jmarket --dbname.0 jmarket
+java -classpath C:\Users\anthonyponte\Downloads\hsqldb-2.7.2\hsqldb\lib\hsqldb.jar org.hsqldb.server.Server --database.0 file:C:\Users\anthonyponte\Documents\NetBeansProjects\jmarket\hsqldb\jmarket --dbname.0 jmarket

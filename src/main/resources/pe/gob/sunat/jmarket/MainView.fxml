@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="bpMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.MainController">
+<BorderPane fx:id="bpMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.MainController">
+   <stylesheets>
+      <URL value="@style/css/colors.css" />
+      <URL value="@style/css/skeleton.css" />
+      <URL value="@style/css/bootstrap.css" />
+      <URL value="@style/css/helpers.css" />
+      <URL value="@style/css/typographic.css" />
+   </stylesheets>
    <top>
       <HBox>
          <children>
@@ -16,21 +38,149 @@
                      <items>
                       <MenuItem fx:id="miUsuario" mnemonicParsing="false" text="Usuario" />
                       <MenuItem fx:id="miProducto" mnemonicParsing="false" text="Producto" />
-                        <MenuItem fx:id="miVenta" mnemonicParsing="false" text="Venta" />
+                      <MenuItem fx:id="miVenta" mnemonicParsing="false" text="Venta" />
+                      <MenuItem fx:id="miDashboard" mnemonicParsing="false" text="Dashboard" />
                      </items>
                 </Menu>
               </menus>
             </MenuBar>
-            <MenuBar>
+            <MenuBar prefHeight="40.0" prefWidth="119.0">
               <menus>
                 <Menu fx:id="menuUsuario" mnemonicParsing="false" text="Usuario">
                   <items>
                     <MenuItem fx:id="miSalir" mnemonicParsing="false" text="Salir" />
                   </items>
+                     <graphic>
+                        <Text fx:id="txtVentana" strokeType="OUTSIDE" strokeWidth="0.0" text=" " />
+                     </graphic>
                 </Menu>
               </menus>
             </MenuBar>
          </children>
       </HBox>
    </top>
+   <center>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="740.0" prefWidth="1023.0">
+               <children>
+                  <GridPane fx:id="gridTiles" alignment="CENTER_LEFT" hgap="20.0" layoutX="384.0" layoutY="100.0" prefHeight="126.0" prefWidth="493.0" vgap="20.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" minHeight="-Infinity" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: -light-gray-2;">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="GRAPHIC_ONLY" style="-fx-background-color: -info; -fx-padding: 20; -fx-background-radius: 10;" text="Label">
+                                 <graphic>
+                                    <SVGPath content="M10 23.375h13.125v-2.792H10Zm0-5.292h20v-2.791H10Zm0-5.291h20v-2.75H10ZM3.333 36.667V6.125q0-1.125.834-1.958.833-.834 1.958-.834h27.75q1.125 0 1.958.834.834.833.834 1.958v21.083q0 1.125-.834 1.959Q35 30 33.875 30H10Zm2.792-6.709 2.708-2.75h25.042V6.125H6.125Zm0-23.833v23.833Z" style="-fx-fill: white;" />
+                                 </graphic>
+                              </Label>
+                              <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets right="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Text fx:id="txtProductos" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -info;" text="0">
+                                       <styleClass>
+                                          <String fx:value="info-text" />
+                                          <String fx:value="text-36" />
+                                       </styleClass>
+                                    </Text>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -aqua;" styleClass="subtitle" text="Productos" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="199.0" layoutY="10.0" minHeight="-Infinity" minWidth="0.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: -light-gray-2;" GridPane.columnIndex="1">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="55.0" prefWidth="2.0" style="-fx-background-color: -grapefruit; -fx-padding: 20; -fx-background-radius: 10;" styleClass="buy" text="Label">
+                                 <graphic>
+                                    <SVGPath content="M11.875 36.625q-1.292 0-2.208-.917-.917-.916-.917-2.166 0-1.292.917-2.209.916-.916 2.208-.916 1.292 0 2.187.916.896.917.896 2.209 0 1.291-.916 2.187-.917.896-2.167.896Zm16.667 0q-1.292 0-2.209-.917-.916-.916-.916-2.166 0-1.292.916-2.209.917-.916 2.209-.916 1.291 0 2.187.916.896.917.896 2.209 0 1.291-.917 2.187-.916.896-2.166.896ZM9.958 9.417l4.375 9.125h11.875l5-9.125ZM8.583 6.625h24.542q.958 0 1.458.875t.042 1.75l-5.75 10.292q-.458.833-1.187 1.291-.73.459-1.646.459H13.5l-2.167 4h20.292v2.791H11.583q-1.791 0-2.625-1.333-.833-1.333 0-2.833l2.5-4.625L5.25 6.125H1.958V3.333h5.084Zm5.75 11.917h11.875Z" style="-fx-fill: white;" />
+                                 </graphic>
+                              </Label>
+                              <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets right="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Text fx:id="txtVentas" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -grapefruit;" text="0">
+                                       <styleClass>
+                                          <String fx:value="info-text" />
+                                          <String fx:value="text-36" />
+                                       </styleClass>
+                                    </Text>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: -grapefruit;" styleClass="subtitle" text="Ventas" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+                  <AnchorPane layoutX="-1.0" layoutY="97.0" prefHeight="617.0" prefWidth="285.0" styleClass="sidebar">
+                     <children>
+                        <Pane layoutX="30.0" layoutY="37.0" prefHeight="30.0" prefWidth="215.0" styleClass="labbtn">
+			               <children>
+			                  <Label alignment="CENTER" layoutX="41.0" layoutY="6.0" text="Mini Market JavaFx" textFill="#2262c6">
+			                     <font>
+			                        <Font name="Berlin Sans FB" size="16.0" />
+			                     </font>
+			                  </Label>
+			               </children>
+			            </Pane>
+			            <HBox alignment="CENTER_RIGHT" layoutX="40.0" layoutY="121.0" prefHeight="64.0" prefWidth="250.0">
+			               <children>
+                              <Button fx:id="btnUsuarios" mnemonicParsing="false" prefHeight="35.0" prefWidth="232.0" text="Ver Usuarios">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font></Button>
+			               </children>
+			               <padding>
+			                  <Insets left="40.0" />
+			               </padding>
+			            </HBox>
+                        <HBox alignment="CENTER_RIGHT" layoutX="40.0" layoutY="198.0" prefHeight="64.0" prefWidth="250.0">
+                           <children>
+                              <Button fx:id="btnProductos" mnemonicParsing="false" prefHeight="35.0" prefWidth="231.0" text="Ver Productos">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" layoutX="40.0" layoutY="277.0" prefHeight="64.0" prefWidth="250.0">
+                           <children>
+                              <Button fx:id="btnVentas" mnemonicParsing="false" prefHeight="35.0" prefWidth="231.0" text="Ver Ventas">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets left="40.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </center>
 </BorderPane>

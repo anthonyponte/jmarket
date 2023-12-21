@@ -6,9 +6,36 @@ import java.util.List;
 public class Venta {
   private Long id;
   private Long numero;
-  private String clienteNombre;
   private LocalDate fecEmision;
-  private List<VentaDetalle> detalle;
+  private int estado;
+  private Persona persona;
+  private List<VentaDetalle> detalles;
+
+  public Venta() {}
+
+  public Venta(
+      Long id,
+      Long numero,
+      LocalDate fecEmision,
+      int estado,
+      Persona persona,
+      List<VentaDetalle> detalles) {
+    this.id = id;
+    this.numero = numero;
+    this.fecEmision = fecEmision;
+    this.estado = estado;
+    this.persona = persona;
+    this.detalles = detalles;
+  }
+
+  public Venta(
+      Long numero, LocalDate fecEmision, int estado, Persona persona, List<VentaDetalle> detalles) {
+    this.numero = numero;
+    this.fecEmision = fecEmision;
+    this.estado = estado;
+    this.persona = persona;
+    this.detalles = detalles;
+  }
 
   public Long getId() {
     return id;
@@ -26,14 +53,6 @@ public class Venta {
     this.numero = numero;
   }
 
-  public String getClienteNombre() {
-    return clienteNombre;
-  }
-
-  public void setClienteNombre(String clienteNombre) {
-    this.clienteNombre = clienteNombre;
-  }
-
   public LocalDate getFecEmision() {
     return fecEmision;
   }
@@ -42,11 +61,45 @@ public class Venta {
     this.fecEmision = fecEmision;
   }
 
-  public List<VentaDetalle> getDetalle() {
-    return detalle;
+  public int getEstado() {
+    return estado;
   }
 
-  public void setDetalle(List<VentaDetalle> detalle) {
-    this.detalle = detalle;
+  public void setEstado(int estado) {
+    this.estado = estado;
+  }
+
+  public Persona getPersona() {
+    return persona;
+  }
+
+  public void setPersona(Persona persona) {
+    this.persona = persona;
+  }
+
+  public List<VentaDetalle> getDetalles() {
+    return detalles;
+  }
+
+  public void setDetalles(List<VentaDetalle> detalles) {
+    this.detalles = detalles;
+  }
+
+  @Override
+  public String toString() {
+    return "Venta{"
+        + "id="
+        + id
+        + ", numero="
+        + numero
+        + ", fecEmision="
+        + fecEmision
+        + ", estado="
+        + estado
+        + ", persona="
+        + persona
+        + ", detalles="
+        + detalles
+        + '}';
   }
 }

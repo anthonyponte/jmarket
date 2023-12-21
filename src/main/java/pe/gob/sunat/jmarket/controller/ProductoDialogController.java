@@ -75,7 +75,7 @@ public class ProductoDialogController implements Initializable {
               producto.setDescripcion(descripcion);
               producto.setUnidadMedida(unidadMedida);
               producto.setPrecioUnitario(precioUnitario);
-
+              producto.setEstado(Estado.ACTIVO.getCodigo());
               dao.update(producto);
 
               Alert alert = new Alert(AlertType.INFORMATION);

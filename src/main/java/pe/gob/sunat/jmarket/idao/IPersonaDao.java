@@ -113,13 +113,13 @@ public class IPersonaDao implements PersonaDao {
         while (rs.next()) {
           persona = new Persona();
           persona.setId(rs.getLong(1));
-          persona.setTipoDocumento(rs.getInt(5));
-          persona.setNumeroDocumento(rs.getString(6));
-          persona.setPrimerNombre(rs.getString(7));
-          persona.setSegundoNombre(rs.getString(8));
-          persona.setApellidoPaterno(rs.getString(9));
-          persona.setApellidoMaterno(rs.getString(10));
-          persona.setEstado(rs.getInt(11));
+          persona.setTipoDocumento(rs.getInt(2));
+          persona.setNumeroDocumento(rs.getString(3));
+          persona.setPrimerNombre(rs.getString(4));
+          persona.setSegundoNombre(rs.getString(5));
+          persona.setApellidoPaterno(rs.getString(6));
+          persona.setApellidoMaterno(rs.getString(7));
+          persona.setEstado(rs.getInt(8));
         }
       }
     } catch (SQLException ex) {

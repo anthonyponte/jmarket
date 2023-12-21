@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -74,7 +75,39 @@ public class ProductoController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     initUI();
-    setList();
+
+    FilteredList<Producto> filteredList = new FilteredList<>(observableList, p -> true);
+
+    txtFiltro
+        .textProperty()
+        .addListener(
+            (observable, oldValue, newValue) -> {
+              filteredList.setPredicate(
+                  producto -> {
+                    if (newValue == null || newValue.isEmpty()) {
+                      return true;
+                    }
+
+                    String lowerCaseFilter = newValue.toLowerCase();
+
+                    if (producto.getCodigo().toLowerCase().contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (producto.getDescripcion().toLowerCase().contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (UnidadMedida.values()[producto.getUnidadMedida()]
+                        .getDescripcion()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    } else if (Estado.values()[producto.getEstado()]
+                        .getDescripcion()
+                        .toLowerCase()
+                        .contains(lowerCaseFilter)) {
+                      return true;
+                    }
+                    return false;
+                  });
+            });
 
     tcCodigo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCodigo()));
 
@@ -151,6 +184,9 @@ public class ProductoController implements Initializable {
             }
           }
         });
+
+    table.setItems(filteredList);
+    setList();
   }
 
   private void initUI() {
@@ -161,8 +197,8 @@ public class ProductoController implements Initializable {
 
   private void setList() {
     List<Producto> list = dao.read();
+    observableList.clear();
     observableList.setAll(list);
-    table.setItems(observableList);
   }
 
   private Stage getStage(FXMLLoader fxmlLoader) {
