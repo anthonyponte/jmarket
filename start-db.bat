@@ -1,0 +1,1 @@
+java.exe -classpath "hsqldb\bin\hsqldb.jar" org.hsqldb.server.Server --database.0 file:hsqldb\jmarket --dbname.0 jmarket
