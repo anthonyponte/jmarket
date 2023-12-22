@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
  */
 
-package pe.gob.sunat.jmarket.model;
+package pe.gob.sunat.jmarket.model.num;
 
 /**
  * @author anthonyponte

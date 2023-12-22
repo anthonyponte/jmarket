@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package pe.gob.sunat.jmarket.idao;
+package pe.gob.sunat.jmarket.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

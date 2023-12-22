@@ -120,6 +120,10 @@ public class Persona {
     this.estado = estado;
   }
 
+  public String getNombreCompleto() {
+    return primerNombre + " " + segundoNombre + " " + apellidoPaterno + " " + apellidoMaterno;
+  }
+
   @Override
   public String toString() {
     return "Persona{"

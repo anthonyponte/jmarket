@@ -6,7 +6,7 @@ import java.util.List;
 public class Venta {
   private Long id;
   private Long numero;
-  private LocalDate fecEmision;
+  private LocalDate fechaEmision;
   private int estado;
   private Persona persona;
   private List<VentaDetalle> detalles;
@@ -16,22 +16,26 @@ public class Venta {
   public Venta(
       Long id,
       Long numero,
-      LocalDate fecEmision,
+      LocalDate fechaEmision,
       int estado,
       Persona persona,
       List<VentaDetalle> detalles) {
     this.id = id;
     this.numero = numero;
-    this.fecEmision = fecEmision;
+    this.fechaEmision = fechaEmision;
     this.estado = estado;
     this.persona = persona;
     this.detalles = detalles;
   }
 
   public Venta(
-      Long numero, LocalDate fecEmision, int estado, Persona persona, List<VentaDetalle> detalles) {
+      Long numero,
+      LocalDate fechaEmision,
+      int estado,
+      Persona persona,
+      List<VentaDetalle> detalles) {
     this.numero = numero;
-    this.fecEmision = fecEmision;
+    this.fechaEmision = fechaEmision;
     this.estado = estado;
     this.persona = persona;
     this.detalles = detalles;
@@ -53,12 +57,12 @@ public class Venta {
     this.numero = numero;
   }
 
-  public LocalDate getFecEmision() {
-    return fecEmision;
+  public LocalDate getFechaEmision() {
+    return fechaEmision;
   }
 
-  public void setFecEmision(LocalDate fecEmision) {
-    this.fecEmision = fecEmision;
+  public void setFechaEmision(LocalDate fechaEmision) {
+    this.fechaEmision = fechaEmision;
   }
 
   public int getEstado() {
@@ -92,8 +96,8 @@ public class Venta {
         + id
         + ", numero="
         + numero
-        + ", fecEmision="
-        + fecEmision
+        + ", fechaEmision="
+        + fechaEmision
         + ", estado="
         + estado
         + ", persona="

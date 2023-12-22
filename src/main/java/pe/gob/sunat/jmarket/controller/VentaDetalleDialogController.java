@@ -19,10 +19,10 @@ import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import pe.gob.sunat.jmarket.dao.ProductoDao;
-import pe.gob.sunat.jmarket.idao.IProductoDao;
-import pe.gob.sunat.jmarket.model.Estado;
+import pe.gob.sunat.jmarket.impl.IProductoDao;
+import pe.gob.sunat.jmarket.model.num.Estado;
 import pe.gob.sunat.jmarket.model.Producto;
-import pe.gob.sunat.jmarket.model.UnidadMedida;
+import pe.gob.sunat.jmarket.model.num.UnidadMedida;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
 
 /**

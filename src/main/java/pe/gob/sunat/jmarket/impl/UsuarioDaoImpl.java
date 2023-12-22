@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-package pe.gob.sunat.jmarket.idao;
+package pe.gob.sunat.jmarket.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,33 +12,32 @@ import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.Usuario;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
-/**
- * @author Anthony Ponte
- */
-public class IUsuarioDao implements UsuarioDao {
+public class UsuarioDaoImpl implements UsuarioDao {
   private final MyHsqldbConnection database;
 
-  public IUsuarioDao() {
+  public UsuarioDaoImpl() {
     this.database = new MyHsqldbConnection();
   }
 
   @Override
-  public Long create(Usuario usuario) {
+  public Long create(Usuario o) {
     Long id = 0L;
 
     database.connect();
 
     String query =
-        "INSERT INTO USUARIO (TIPO_USUARIO, NOMBRE_USUARIO, CONTRASENA, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO USUARIO (TIPO_USUARIO, NOMBRE_USUARIO, CONTRASENA, ESTADO, "
+            + "PERSONA_ID) "
+            + "VALUES (?, ?, ?, ?, ?)";
 
     try (PreparedStatement ps =
         database.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setInt(1, usuario.getTipoUsuario());
-      ps.setString(2, usuario.getNombreUsuario());
-      ps.setString(3, usuario.getContrasena());
-      ps.setInt(4, usuario.getEstado());
-      ps.setLong(5, usuario.getPersona().getId());
+      ps.setInt(1, o.getTipoUsuario());
+      ps.setString(2, o.getNombreUsuario());
+      ps.setString(3, o.getContrasena());
+      ps.setInt(4, o.getEstado());
+      ps.setLong(5, o.getPersona().getId());
       ps.executeUpdate();
 
       try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -53,7 +47,7 @@ public class IUsuarioDao implements UsuarioDao {
       }
 
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -68,12 +62,14 @@ public class IUsuarioDao implements UsuarioDao {
     database.connect();
 
     String query =
-        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
-            + "B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, "
+            + "A.ESTADO, B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, "
+            + "B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, "
+            + "B.ESTADO "
             + "FROM USUARIO A "
-            + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
-            + "WHERE A.ID = ? "
-            + "ORDER BY A.ID DESC";
+            + "INNER JOIN PERSONA B "
+            + "ON A.PERSONA_ID = B.ID "
+            + "WHERE A.ID = ?";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setLong(1, id);
@@ -100,7 +96,7 @@ public class IUsuarioDao implements UsuarioDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -115,10 +111,13 @@ public class IUsuarioDao implements UsuarioDao {
     database.connect();
 
     String query =
-        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, A.ESTADO, "
-            + "B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, B.ESTADO "
+        "SELECT A.ID, A.TIPO_USUARIO, A.NOMBRE_USUARIO, A.CONTRASENA, "
+            + "A.ESTADO, B.ID, B.TIPO_DOCUMENTO, B.NUMERO_DOCUMENTO, "
+            + "B.PRIMER_NOMBRE, B.SEGUNDO_NOMBRE, B.APELLIDO_PATERNO, B.APELLIDO_MATERNO, "
+            + "B.ESTADO "
             + "FROM USUARIO A "
-            + "INNER JOIN PERSONA B ON A.PERSONA_ID = B.ID "
+            + "INNER JOIN PERSONA B "
+            + "ON A.PERSONA_ID = B.ID "
             + "ORDER BY A.ID DESC";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
@@ -147,7 +146,7 @@ public class IUsuarioDao implements UsuarioDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -156,21 +155,21 @@ public class IUsuarioDao implements UsuarioDao {
   }
 
   @Override
-  public void update(Usuario usuario) {
+  public void update(Usuario o) {
     database.connect();
 
     String query =
         "UPDATE USUARIO SET TIPO_USUARIO = ?, NOMBRE_USUARIO = ?, CONTRASENA = ? WHERE ID = ?";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
-      ps.setInt(1, usuario.getTipoUsuario());
-      ps.setString(2, usuario.getNombreUsuario());
-      ps.setString(3, usuario.getContrasena());
-      ps.setLong(4, usuario.getId());
+      ps.setInt(1, o.getTipoUsuario());
+      ps.setString(2, o.getNombreUsuario());
+      ps.setString(3, o.getContrasena());
+      ps.setLong(4, o.getId());
 
       ps.executeUpdate();
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -186,7 +185,7 @@ public class IUsuarioDao implements UsuarioDao {
       ps.setLong(1, id);
       ps.executeUpdate();
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -210,7 +209,7 @@ public class IUsuarioDao implements UsuarioDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IUsuarioDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();

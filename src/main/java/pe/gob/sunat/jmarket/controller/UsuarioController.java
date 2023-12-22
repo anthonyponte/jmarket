@@ -1,266 +1,230 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
-
 package pe.gob.sunat.jmarket.controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
-import pe.gob.sunat.jmarket.App;
+import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
-import pe.gob.sunat.jmarket.idao.IUsuarioDao;
-import pe.gob.sunat.jmarket.model.Estado;
-import pe.gob.sunat.jmarket.model.TipoDocumento;
-import pe.gob.sunat.jmarket.model.TipoUsuario;
+import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
+import pe.gob.sunat.jmarket.impl.UsuarioDaoImpl;
+import pe.gob.sunat.jmarket.model.num.Estado;
+import pe.gob.sunat.jmarket.model.Persona;
+import pe.gob.sunat.jmarket.model.num.TipoDocumento;
+import pe.gob.sunat.jmarket.model.num.TipoUsuario;
 import pe.gob.sunat.jmarket.model.Usuario;
+import pe.gob.sunat.jmarket.util.MyTextFieldFormat;
 
-/**
- * FXML Controller class
- *
- * @author anthonyponte
- */
 public class UsuarioController implements Initializable {
-  @FXML private Label lblTitulo;
+  @FXML private Button btnGuardar;
+  @FXML private Button btnLimpiar;
+  @FXML private TextField txtId;
+  @FXML private ComboBox<TipoDocumento> cbxTipoDocumento;
+  @FXML private TextField txtNumeroDocumento;
+  @FXML private Button btnBuscar;
+  @FXML private TextField txtNombreCompleto;
+  @FXML private ComboBox<TipoUsuario> cbxTipoUsuario;
+  @FXML private TextField txtNombreUsuario;
+  @FXML private PasswordField txtContrasena;
   @FXML private TextField txtFiltro;
-  @FXML private Button btnRefrescar;
-  @FXML private Button btnAgregar;
   @FXML private TableView<Usuario> table;
+  @FXML private TableColumn<Usuario, Long> tcId;
   @FXML private TableColumn<Usuario, String> tcTipoUsuario;
   @FXML private TableColumn<Usuario, String> tcNombreUsuario;
   @FXML private TableColumn<Usuario, String> tcEstado;
-  @FXML private TableColumn<Usuario, String> tcTipoDocumento;
-  @FXML private TableColumn<Usuario, String> tcNumeroDocumento;
-  @FXML private TableColumn<Usuario, String> tcPrimerNombre;
-  @FXML private TableColumn<Usuario, String> tcSegundoNombre;
-  @FXML private TableColumn<Usuario, String> tcApellidoPaterno;
-  @FXML private TableColumn<Usuario, String> tcApellidoMaterno;
+
+  private Usuario usuario;
+  private Persona persona;
   private ObservableList<Usuario> observableList;
-  private UsuarioDao dao;
+  private UsuarioDao usuarioDao;
+  private PersonaDao personaDao;
 
   public UsuarioController() {
     observableList = FXCollections.observableArrayList();
-    dao = new IUsuarioDao();
+    usuarioDao = new UsuarioDaoImpl();
+    personaDao = new PersonaDaoImpl();
   }
 
-  /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     initUI();
+
+    initTable();
+
     FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
+    table.setItems(filteredList);
+  }
+
+  @FXML
+  private void onActionBtnGuardar(ActionEvent event) {
+    String id = txtId.getText().trim();
+    int tipoUsuario = cbxTipoUsuario.getValue().getCodigo();
+    String nombreUsuario = txtNombreUsuario.getText().trim();
+    String contrasena = txtContrasena.getText().trim();
+
+    if (id.equals("")) {
+      usuario = new Usuario();
+      usuario.setTipoUsuario(tipoUsuario);
+      usuario.setNombreUsuario(nombreUsuario);
+      usuario.setContrasena(contrasena);
+      usuario.setEstado(Estado.ACTIVO.getCodigo());
+      usuario.setPersona(persona);
+
+      Long idUsuario = usuarioDao.create(usuario);
+      if (idUsuario > 0) {
+        usuario.setId(idUsuario);
+
+        observableList.add(usuario);
+
+        clearUI();
+      }
+    } else {
+      usuario.setTipoUsuario(tipoUsuario);
+      usuario.setNombreUsuario(nombreUsuario);
+      usuario.setContrasena(contrasena);
+
+      usuarioDao.update(usuario);
+
+      table.refresh();
+
+      clearUI();
+    }
+  }
+
+  @FXML
+  private void onActionBtnLimpiar(ActionEvent event) {
+    clearUI();
+  }
+
+  @FXML
+  private void onActionBtnBuscar(ActionEvent event) {
+    String numeroDocumento = txtNumeroDocumento.getText().trim();
+    persona = personaDao.read(numeroDocumento);
+    txtNombreCompleto.setText(persona.getNombreCompleto());
+  }
+
+  @FXML
+  private void onKeyPressedTable(KeyEvent event) {
+    if (event.getCode().equals(KeyCode.DELETE)) {
+      Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
+      usuarioDao.delete(usuario.getId());
+      observableList.remove(usuario);
+    }
+  }
+
+  @FXML
+  private void onMouseClickedTable(MouseEvent event) {
+    if (event.getClickCount() == 2) {
+      usuario = (Usuario) table.getSelectionModel().getSelectedItem();
+      table.getSelectionModel().getSelectedIndex();
+
+      cbxTipoDocumento.setDisable(true);
+      txtNumeroDocumento.setDisable(true);
+      btnBuscar.setDisable(true);
+
+      txtId.setText(usuario.getId().toString());
+      cbxTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
+      txtNumeroDocumento.setText(usuario.getPersona().getNumeroDocumento());
+      txtNombreCompleto.setText(usuario.getPersona().getNombreCompleto());
+      cbxTipoUsuario.getSelectionModel().select(usuario.getTipoUsuario());
+      txtNombreUsuario.setText(usuario.getNombreUsuario());
+      txtContrasena.setText(usuario.getContrasena());
+    }
+  }
+
+  private void initUI() {
+    btnGuardar.setGraphic(FontIcon.of(RemixiconMZ.SAVE_LINE, 16));
+    btnLimpiar.setGraphic(FontIcon.of(RemixiconAL.ERASER_LINE, 16));
+
+    cbxTipoDocumento.getItems().addAll(TipoDocumento.values());
+    cbxTipoUsuario.getItems().addAll(TipoUsuario.values());
+
+    MyTextFieldFormat.toUpperCase(txtNombreCompleto);
+    MyTextFieldFormat.toUpperCase(txtNombreUsuario);
+  }
+
+  private void initTable() {
+    tcId.setCellValueFactory(c -> new SimpleObjectProperty(c.getValue().getId()));
+    tcTipoUsuario.setCellValueFactory(
+        c ->
+            new SimpleStringProperty(
+                TipoUsuario.values()[c.getValue().getTipoUsuario()].getDescripcion()));
+    tcNombreUsuario.setCellValueFactory(
+        c -> new SimpleStringProperty(c.getValue().getNombreUsuario()));
+    tcEstado.setCellValueFactory(
+        c -> new SimpleStringProperty(Estado.values()[c.getValue().getEstado()].getDescripcion()));
+
+    FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
+    table.setItems(filteredList);
 
     txtFiltro
         .textProperty()
         .addListener(
             (observable, oldValue, newValue) -> {
               filteredList.setPredicate(
-                  usuario -> {
+                  u -> {
                     if (newValue == null || newValue.isEmpty()) {
                       return true;
                     }
 
-                    String lowerCaseFilter = newValue.toLowerCase();
+                    String value = newValue.toLowerCase();
 
-                    if (TipoUsuario.values()[usuario.getTipoUsuario()]
+                    if (TipoUsuario.values()[u.getTipoUsuario()]
                         .getDescripcion()
                         .toLowerCase()
-                        .contains(lowerCaseFilter)) {
+                        .contains(value)) {
                       return true;
-                    } else if (usuario.getNombreUsuario().toLowerCase().contains(lowerCaseFilter)) {
+                    } else if (u.getNombreUsuario().toLowerCase().contains(value)) {
                       return true;
-                    } else if (TipoDocumento.values()[usuario.getPersona().getTipoDocumento()]
+                    } else if (Estado.values()[u.getEstado()]
                         .getDescripcion()
                         .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (usuario
-                        .getPersona()
-                        .getNumeroDocumento()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (usuario
-                        .getPersona()
-                        .getPrimerNombre()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (usuario
-                        .getPersona()
-                        .getSegundoNombre()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (usuario
-                        .getPersona()
-                        .getApellidoPaterno()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (usuario
-                        .getPersona()
-                        .getApellidoMaterno()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
+                        .contains(value)) {
                       return true;
                     }
+
                     return false;
                   });
             });
 
-    tcNombreUsuario.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getNombreUsuario()));
-
-    tcTipoUsuario.setCellValueFactory(
-        c ->
-            new SimpleStringProperty(
-                TipoUsuario.values()[c.getValue().getTipoUsuario()].getDescripcion()));
-
-    tcEstado.setCellValueFactory(
-        c -> new SimpleStringProperty(Estado.values()[c.getValue().getEstado()].getDescripcion()));
-
-    tcTipoDocumento.setCellValueFactory(
-        c ->
-            new SimpleStringProperty(
-                TipoDocumento.values()[c.getValue().getPersona().getTipoDocumento()]
-                    .getDescripcion()));
-
-    tcNumeroDocumento.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPersona().getNumeroDocumento()));
-
-    tcPrimerNombre.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPersona().getPrimerNombre()));
-
-    tcSegundoNombre.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPersona().getSegundoNombre()));
-
-    tcApellidoPaterno.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPersona().getApellidoPaterno()));
-
-    tcApellidoMaterno.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPersona().getApellidoMaterno()));
-
-    btnRefrescar.setOnAction(
-        (ActionEvent t) -> {
-          List<Usuario> list = dao.read();
-          observableList.clear();
-          observableList.setAll(list);
-        });
-
-    btnAgregar.setOnAction(
-        (ActionEvent t) -> {
-          try {
-            FXMLLoader fxmlLoader = App.loadFXML("UsuarioDialog");
-            Stage stage = getStage(fxmlLoader);
-            stage.showAndWait();
-          } catch (IOException ex) {
-            Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        });
-
-    table.setRowFactory(
-        tv -> {
-          TableRow<Usuario> tlUsuario = new TableRow<>();
-          tlUsuario.setOnMouseClicked(
-              event -> {
-                if (event.getClickCount() == 2 && (!tlUsuario.isEmpty())) {
-                  try {
-                    Usuario usuario = table.getSelectionModel().getSelectedItem();
-                    FXMLLoader fxmlLoader = App.loadFXML("UsuarioDialog");
-                    Stage stage = getStage(fxmlLoader);
-                    UsuarioDialogController controller =
-                        fxmlLoader.<UsuarioDialogController>getController();
-                    controller.setUsuario(usuario);
-                    stage.showAndWait();
-                  } catch (IOException ex) {
-                    Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
-                  }
-                }
-              });
-          return tlUsuario;
-        });
-
-    table.setOnKeyPressed(
-        new EventHandler<KeyEvent>() {
-          @Override
-          public void handle(KeyEvent event) {
-            if (event.getCode().equals(KeyCode.DELETE)) {
-              Alert alert = new Alert(AlertType.CONFIRMATION);
-              alert.setTitle("Eliminar");
-              alert.setHeaderText(null);
-              alert.setContentText("Seguro que desea eliminar este registro?");
-
-              Optional<ButtonType> result = alert.showAndWait();
-              if (result.get() == ButtonType.OK) {
-                Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
-                dao.delete(usuario.getId());
-                observableList.remove(usuario);
-              }
-            }
-          }
-        });
-
-    table.setItems(filteredList);
-    setList();
-  }
-
-  private void initUI() {
-    lblTitulo.setGraphic(FontIcon.of(RemixiconMZ.USER_LINE, 32));
-    btnRefrescar.setGraphic(FontIcon.of(RemixiconMZ.REFRESH_LINE, 16));
-    btnAgregar.setGraphic(FontIcon.of(RemixiconAL.ADD_LINE, 16));
-  }
-
-  private void setList() {
-    List<Usuario> list = dao.read();
+    List<Usuario> list = usuarioDao.read();
     observableList.clear();
     observableList.setAll(list);
   }
 
-  private Stage getStage(FXMLLoader fxmlLoader) {
-    Stage stage = null;
-    try {
-      Parent parent = fxmlLoader.load();
-      Scene scene = new Scene(parent);
-      stage = new Stage();
-      stage.initModality(Modality.APPLICATION_MODAL);
-      stage.setScene(scene);
-      stage.setTitle("Usuario");
-      stage.setResizable(false);
-    } catch (IOException ex) {
-      Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    return stage;
+  private void clearUI() {
+    usuario = null;
+    persona = null;
+
+    cbxTipoDocumento.setDisable(false);
+    txtNumeroDocumento.setDisable(false);
+    btnBuscar.setDisable(false);
+
+    txtId.clear();
+    cbxTipoDocumento.getSelectionModel().clearSelection();
+    txtNumeroDocumento.clear();
+    txtNombreCompleto.clear();
+    cbxTipoUsuario.getSelectionModel().clearSelection();
+    txtNombreUsuario.clear();
+    txtContrasena.clear();
   }
 }

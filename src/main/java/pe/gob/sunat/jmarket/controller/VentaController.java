@@ -30,9 +30,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
-import pe.gob.sunat.jmarket.idao.IPersonaDao;
+import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.model.Persona;
-import pe.gob.sunat.jmarket.model.UnidadMedida;
+import pe.gob.sunat.jmarket.model.num.UnidadMedida;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
 
 /**
@@ -58,7 +58,7 @@ public class VentaController implements Initializable {
   private PersonaDao personaDao;
 
   public VentaController() {
-    personaDao = new IPersonaDao();
+    personaDao = new PersonaDaoImpl();
     observableList = FXCollections.observableArrayList();
   }
 
@@ -89,7 +89,7 @@ public class VentaController implements Initializable {
                     + persona.getApellidoPaterno()
                     + " "
                     + persona.getApellidoMaterno();
-            
+
             txtNombre.setText(nombre);
           } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -105,9 +105,9 @@ public class VentaController implements Initializable {
           try {
             FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
             Parent parent = fxmlLoader.load();
-            VentaDetalleDialogController dialog =
+            VentaDetalleDialogController controller =
                 fxmlLoader.<VentaDetalleDialogController>getController();
-            dialog.setObservableList(observableList);
+            controller.setObservableList(observableList);
 
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
