@@ -3,6 +3,7 @@ package pe.gob.sunat.jmarket.controller;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -20,9 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.remixicon.RemixiconAL;
-import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
 import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
@@ -32,20 +30,19 @@ import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.num.TipoDocumento;
 import pe.gob.sunat.jmarket.model.num.TipoUsuario;
 import pe.gob.sunat.jmarket.model.Usuario;
-import pe.gob.sunat.jmarket.util.MyTextFieldFormat;
 
 public class UsuarioController implements Initializable {
-  @FXML private Button btnGuardar;
-  @FXML private Button btnLimpiar;
-  @FXML private TextField txtId;
-  @FXML private ComboBox<TipoDocumento> cbxTipoDocumento;
-  @FXML private TextField txtNumeroDocumento;
+  @FXML private TextField tfId;
+  @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
+  @FXML private TextField tfNumeroDocumento;
+  @FXML private TextField tfNombreCompleto;
+  @FXML private ComboBox<TipoUsuario> cbTipoUsuario;
+  @FXML private TextField tfNombreUsuario;
+  @FXML private PasswordField pfContrasena;
   @FXML private Button btnBuscar;
-  @FXML private TextField txtNombreCompleto;
-  @FXML private ComboBox<TipoUsuario> cbxTipoUsuario;
-  @FXML private TextField txtNombreUsuario;
-  @FXML private PasswordField txtContrasena;
-  @FXML private TextField txtFiltro;
+  @FXML private Button btnGuardar;
+
+  @FXML private TextField tfFiltro;
   @FXML private TableView<Usuario> table;
   @FXML private TableColumn<Usuario, Long> tcId;
   @FXML private TableColumn<Usuario, String> tcTipoUsuario;
@@ -66,20 +63,36 @@ public class UsuarioController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    initUI();
+    cbTipoDocumento.getItems().addAll(TipoDocumento.values());
+    cbTipoUsuario.getItems().addAll(TipoUsuario.values());
+    cbTipoDocumento.getSelectionModel().selectFirst();
+    cbTipoUsuario.getSelectionModel().selectFirst();
+
+    btnGuardar
+        .disableProperty()
+        .bind(
+            Bindings.isEmpty(tfNumeroDocumento.textProperty())
+                .or(Bindings.isEmpty(tfNombreCompleto.textProperty()))
+                .or(Bindings.isEmpty(tfNombreUsuario.textProperty()))
+                .or(Bindings.isEmpty(pfContrasena.textProperty())));
 
     initTable();
+  }
 
-    FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
-    table.setItems(filteredList);
+  @FXML
+  private void onActionBtnBuscar(ActionEvent event) {
+    String numeroDocumento = tfNumeroDocumento.getText().trim();
+    if (numeroDocumento.equals("")) return;
+    persona = personaDao.read(numeroDocumento);
+    tfNombreCompleto.setText(persona.getNombreCompleto());
   }
 
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
-    String id = txtId.getText().trim();
-    int tipoUsuario = cbxTipoUsuario.getValue().getCodigo();
-    String nombreUsuario = txtNombreUsuario.getText().trim();
-    String contrasena = txtContrasena.getText().trim();
+    String id = tfId.getText().trim();
+    int tipoUsuario = cbTipoUsuario.getValue().getCodigo();
+    String nombreUsuario = tfNombreUsuario.getText().trim();
+    String contrasena = pfContrasena.getText().trim();
 
     if (id.equals("")) {
       usuario = new Usuario();
@@ -101,7 +114,6 @@ public class UsuarioController implements Initializable {
       usuario.setTipoUsuario(tipoUsuario);
       usuario.setNombreUsuario(nombreUsuario);
       usuario.setContrasena(contrasena);
-
       usuarioDao.update(usuario);
 
       table.refresh();
@@ -113,13 +125,6 @@ public class UsuarioController implements Initializable {
   @FXML
   private void onActionBtnLimpiar(ActionEvent event) {
     clearUI();
-  }
-
-  @FXML
-  private void onActionBtnBuscar(ActionEvent event) {
-    String numeroDocumento = txtNumeroDocumento.getText().trim();
-    persona = personaDao.read(numeroDocumento);
-    txtNombreCompleto.setText(persona.getNombreCompleto());
   }
 
   @FXML
@@ -137,29 +142,18 @@ public class UsuarioController implements Initializable {
       usuario = (Usuario) table.getSelectionModel().getSelectedItem();
       table.getSelectionModel().getSelectedIndex();
 
-      cbxTipoDocumento.setDisable(true);
-      txtNumeroDocumento.setDisable(true);
+      cbTipoDocumento.setDisable(true);
+      tfNumeroDocumento.setDisable(true);
       btnBuscar.setDisable(true);
 
-      txtId.setText(usuario.getId().toString());
-      cbxTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
-      txtNumeroDocumento.setText(usuario.getPersona().getNumeroDocumento());
-      txtNombreCompleto.setText(usuario.getPersona().getNombreCompleto());
-      cbxTipoUsuario.getSelectionModel().select(usuario.getTipoUsuario());
-      txtNombreUsuario.setText(usuario.getNombreUsuario());
-      txtContrasena.setText(usuario.getContrasena());
+      tfId.setText(usuario.getId().toString());
+      cbTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
+      tfNumeroDocumento.setText(usuario.getPersona().getNumeroDocumento());
+      tfNombreCompleto.setText(usuario.getPersona().getNombreCompleto());
+      cbTipoUsuario.getSelectionModel().select(usuario.getTipoUsuario());
+      tfNombreUsuario.setText(usuario.getNombreUsuario());
+      pfContrasena.setText(usuario.getContrasena());
     }
-  }
-
-  private void initUI() {
-    btnGuardar.setGraphic(FontIcon.of(RemixiconMZ.SAVE_LINE, 16));
-    btnLimpiar.setGraphic(FontIcon.of(RemixiconAL.ERASER_LINE, 16));
-
-    cbxTipoDocumento.getItems().addAll(TipoDocumento.values());
-    cbxTipoUsuario.getItems().addAll(TipoUsuario.values());
-
-    MyTextFieldFormat.toUpperCase(txtNombreCompleto);
-    MyTextFieldFormat.toUpperCase(txtNombreUsuario);
   }
 
   private void initTable() {
@@ -176,7 +170,7 @@ public class UsuarioController implements Initializable {
     FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
     table.setItems(filteredList);
 
-    txtFiltro
+    tfFiltro
         .textProperty()
         .addListener(
             (observable, oldValue, newValue) -> {
@@ -215,16 +209,16 @@ public class UsuarioController implements Initializable {
     usuario = null;
     persona = null;
 
-    cbxTipoDocumento.setDisable(false);
-    txtNumeroDocumento.setDisable(false);
+    cbTipoDocumento.setDisable(false);
+    tfNumeroDocumento.setDisable(false);
     btnBuscar.setDisable(false);
 
-    txtId.clear();
-    cbxTipoDocumento.getSelectionModel().clearSelection();
-    txtNumeroDocumento.clear();
-    txtNombreCompleto.clear();
-    cbxTipoUsuario.getSelectionModel().clearSelection();
-    txtNombreUsuario.clear();
-    txtContrasena.clear();
+    tfId.clear();
+    cbTipoDocumento.getSelectionModel().clearSelection();
+    tfNumeroDocumento.clear();
+    tfNombreCompleto.clear();
+    cbTipoUsuario.getSelectionModel().clearSelection();
+    tfNombreUsuario.clear();
+    pfContrasena.clear();
   }
 }

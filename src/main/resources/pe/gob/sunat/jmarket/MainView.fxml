@@ -12,21 +12,21 @@
          <children>
             <MenuBar HBox.hgrow="ALWAYS">
               <menus>
-                <Menu fx:id="menu" mnemonicParsing="false" text="Menu">
+                <Menu mnemonicParsing="false" text="Menu">
                      <items>
-                        <MenuItem fx:id="miPersona" mnemonicParsing="false" text="Persona" />
-                      <MenuItem fx:id="miUsuario" mnemonicParsing="false" text="Usuario" />
-                      <MenuItem fx:id="miProducto" mnemonicParsing="false" text="Producto" />
-                      <MenuItem fx:id="miVenta" mnemonicParsing="false" text="Venta" />
+                        <MenuItem mnemonicParsing="false" onAction="#onActionMiPersona" text="Persona" />
+                      <MenuItem mnemonicParsing="false" onAction="#onActionMiUsuario" text="Usuario" />
+                      <MenuItem mnemonicParsing="false" onAction="#onActionMiProducto" text="Producto" />
+                      <MenuItem mnemonicParsing="false" onAction="#onActionMiVenta" text="Venta" />
                      </items>
                 </Menu>
               </menus>
             </MenuBar>
             <MenuBar>
               <menus>
-                <Menu fx:id="menuUsuario" mnemonicParsing="false" text="Usuario">
+                <Menu fx:id="mnUsuario" mnemonicParsing="false" text="Usuario">
                   <items>
-                    <MenuItem fx:id="miSalir" mnemonicParsing="false" text="Salir" />
+                    <MenuItem mnemonicParsing="false" text="Salir" />
                   </items>
                 </Menu>
               </menus>

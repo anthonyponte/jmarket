@@ -4,50 +4,50 @@ import java.math.BigDecimal;
 
 public class VentaDetalle {
   private Long id;
-  private int fila;
-  private Venta venta;
-  private Producto producto;
+  private int numeroFila;
   private BigDecimal precioUnitario;
   private BigDecimal cantidad;
   private BigDecimal subtotal;
   private int estado;
+  private Producto producto;
+  private Venta venta;
 
   public VentaDetalle() {}
 
   public VentaDetalle(
       Long id,
-      int fila,
-      Venta venta,
-      Producto producto,
+      int numeroFila,
       BigDecimal precioUnitario,
       BigDecimal cantidad,
       BigDecimal subtotal,
-      int estado) {
+      int estado,
+      Producto producto,
+      Venta venta) {
     this.id = id;
-    this.fila = fila;
-    this.venta = venta;
-    this.producto = producto;
+    this.numeroFila = numeroFila;
     this.precioUnitario = precioUnitario;
     this.cantidad = cantidad;
     this.subtotal = subtotal;
     this.estado = estado;
+    this.producto = producto;
+    this.venta = venta;
   }
 
   public VentaDetalle(
-      int fila,
-      Venta venta,
-      Producto producto,
+      int numeroFila,
       BigDecimal precioUnitario,
       BigDecimal cantidad,
       BigDecimal subtotal,
-      int estado) {
-    this.fila = fila;
-    this.venta = venta;
-    this.producto = producto;
+      int estado,
+      Producto producto,
+      Venta venta) {
+    this.numeroFila = numeroFila;
     this.precioUnitario = precioUnitario;
     this.cantidad = cantidad;
     this.subtotal = subtotal;
     this.estado = estado;
+    this.producto = producto;
+    this.venta = venta;
   }
 
   public Long getId() {
@@ -58,28 +58,12 @@ public class VentaDetalle {
     this.id = id;
   }
 
-  public int getFila() {
-    return fila;
+  public int getNumeroFila() {
+    return numeroFila;
   }
 
-  public void setFila(int fila) {
-    this.fila = fila;
-  }
-
-  public Venta getVenta() {
-    return venta;
-  }
-
-  public void setVenta(Venta venta) {
-    this.venta = venta;
-  }
-
-  public Producto getProducto() {
-    return producto;
-  }
-
-  public void setProducto(Producto producto) {
-    this.producto = producto;
+  public void setNumeroFila(int numeroFila) {
+    this.numeroFila = numeroFila;
   }
 
   public BigDecimal getPrecioUnitario() {
@@ -114,17 +98,29 @@ public class VentaDetalle {
     this.estado = estado;
   }
 
+  public Producto getProducto() {
+    return producto;
+  }
+
+  public void setProducto(Producto producto) {
+    this.producto = producto;
+  }
+
+  public Venta getVenta() {
+    return venta;
+  }
+
+  public void setVenta(Venta venta) {
+    this.venta = venta;
+  }
+
   @Override
   public String toString() {
     return "VentaDetalle{"
         + "id="
         + id
-        + ", fila="
-        + fila
-        + ", venta="
-        + venta
-        + ", producto="
-        + producto
+        + ", numeroFila="
+        + numeroFila
         + ", precioUnitario="
         + precioUnitario
         + ", cantidad="
@@ -133,6 +129,10 @@ public class VentaDetalle {
         + subtotal
         + ", estado="
         + estado
+        + ", producto="
+        + producto
+        + ", venta="
+        + venta
         + '}';
   }
 }

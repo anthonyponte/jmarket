@@ -1,44 +1,26 @@
 package pe.gob.sunat.jmarket.model;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Venta {
   private Long id;
-  private Long numero;
   private LocalDate fechaEmision;
   private int estado;
   private Persona persona;
-  private List<VentaDetalle> detalles;
 
   public Venta() {}
 
-  public Venta(
-      Long id,
-      Long numero,
-      LocalDate fechaEmision,
-      int estado,
-      Persona persona,
-      List<VentaDetalle> detalles) {
+  public Venta(Long id, LocalDate fechaEmision, int estado, Persona persona) {
     this.id = id;
-    this.numero = numero;
     this.fechaEmision = fechaEmision;
     this.estado = estado;
     this.persona = persona;
-    this.detalles = detalles;
   }
 
-  public Venta(
-      Long numero,
-      LocalDate fechaEmision,
-      int estado,
-      Persona persona,
-      List<VentaDetalle> detalles) {
-    this.numero = numero;
+  public Venta(LocalDate fechaEmision, int estado, Persona persona) {
     this.fechaEmision = fechaEmision;
     this.estado = estado;
     this.persona = persona;
-    this.detalles = detalles;
   }
 
   public Long getId() {
@@ -47,14 +29,6 @@ public class Venta {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public Long getNumero() {
-    return numero;
-  }
-
-  public void setNumero(Long numero) {
-    this.numero = numero;
   }
 
   public LocalDate getFechaEmision() {
@@ -81,29 +55,17 @@ public class Venta {
     this.persona = persona;
   }
 
-  public List<VentaDetalle> getDetalles() {
-    return detalles;
-  }
-
-  public void setDetalles(List<VentaDetalle> detalles) {
-    this.detalles = detalles;
-  }
-
   @Override
   public String toString() {
     return "Venta{"
         + "id="
         + id
-        + ", numero="
-        + numero
         + ", fechaEmision="
         + fechaEmision
         + ", estado="
         + estado
         + ", persona="
         + persona
-        + ", detalles="
-        + detalles
         + '}';
   }
 }

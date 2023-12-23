@@ -22,9 +22,9 @@
     <children>
         <Label text="Nombre Usuario:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
         <Label text="Contraseña:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-        <TextField fx:id="txtNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Nombre Usuario" GridPane.columnIndex="1" />
-        <PasswordField fx:id="txtContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Button fx:id="btnEntrar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Entrar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />        
+        <TextField fx:id="tfNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Nombre Usuario" GridPane.columnIndex="1" />
+        <PasswordField fx:id="pfContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Button fx:id="btnEntrar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnEntrar" prefHeight="30.0" prefWidth="100.0" text="Entrar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />        
     </children>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

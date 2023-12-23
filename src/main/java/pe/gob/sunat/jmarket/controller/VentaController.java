@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
-
 package pe.gob.sunat.jmarket.controller;
 
 import java.io.IOException;
@@ -11,6 +6,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -21,8 +17,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -32,28 +29,29 @@ import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.model.Persona;
+import pe.gob.sunat.jmarket.model.Venta;
 import pe.gob.sunat.jmarket.model.num.UnidadMedida;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
+import pe.gob.sunat.jmarket.model.num.TipoDocumento;
 
-/**
- * FXML Controller class
- *
- * @author anthonyponte
- */
 public class VentaController implements Initializable {
-  @FXML private Button btnBuscar;
-  @FXML private TextField txtNumeroDocumento;
-  @FXML private TextField txtNombre;
+  @FXML private TextField tfId;
+  @FXML private DatePicker dpFechaEmision;
+  @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
+  @FXML private TextField tfNumeroDocumento;
+  @FXML private TextField tfNombreCompleto;
   @FXML private Button btnGuardar;
+
   @FXML private TableView<VentaDetalle> table;
-  @FXML private Button btnAgregar;
   @FXML private TableColumn<VentaDetalle, String> tcCodigo;
   @FXML private TableColumn<VentaDetalle, String> tcDescripcion;
   @FXML private TableColumn<VentaDetalle, String> tcUnidadMedida;
   @FXML private TableColumn<VentaDetalle, BigDecimal> tcCantidad;
   @FXML private TableColumn<VentaDetalle, BigDecimal> tcPrecioUnitario;
   @FXML private TableColumn<VentaDetalle, BigDecimal> tcSubtotal;
-  @FXML private TextField txtTotal;
+
+  private Venta venta;
+  private Persona persona;
   private ObservableList<VentaDetalle> observableList;
   private PersonaDao personaDao;
 
@@ -62,82 +60,68 @@ public class VentaController implements Initializable {
     observableList = FXCollections.observableArrayList();
   }
 
-  /** Initializes the controller class. */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    btnBuscar.setOnAction(
-        (ActionEvent t) -> {
-          String numeroDocumento = txtNumeroDocumento.getText().toUpperCase();
+    cbTipoDocumento.getItems().addAll(TipoDocumento.values());
+    cbTipoDocumento.getSelectionModel().selectFirst();
 
-          if (numeroDocumento.equals("")) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Numero Documento vacio");
-            alert.show();
-            return;
-          }
+    btnGuardar
+        .disableProperty()
+        .bind(
+            Bindings.isEmpty(dpFechaEmision.getEditor().textProperty())
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
+                .or(Bindings.isEmpty(tfNombreCompleto.textProperty())));
 
-          Persona persona = personaDao.read(numeroDocumento);
+    initTable();
+  }
 
-          if (persona != null) {
-            String nombre =
-                persona.getPrimerNombre()
-                    + " "
-                    + persona.getSegundoNombre()
-                    + " "
-                    + persona.getApellidoPaterno()
-                    + " "
-                    + persona.getApellidoMaterno();
+  @FXML
+  private void onActionBtnBuscar(ActionEvent event) {
+    String numeroDocumento = tfNumeroDocumento.getText().trim();
+    if (numeroDocumento.equals("")) return;
+    persona = personaDao.read(numeroDocumento);
+    tfNombreCompleto.setText(persona.getNombreCompleto());
+  }
 
-            txtNombre.setText(nombre);
-          } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("La persona no existe");
-            alert.show();
-          }
-        });
+  @FXML
+  private void onActionBtnAgregar(ActionEvent event) {
+    try {
+      FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
+      Parent parent = fxmlLoader.load();
+      VentaDetalleController controller = fxmlLoader.<VentaDetalleController>getController();
+      controller.setObservableList(observableList);
 
-    btnAgregar.setOnAction(
-        (ActionEvent t) -> {
-          try {
-            FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
-            Parent parent = fxmlLoader.load();
-            VentaDetalleDialogController controller =
-                fxmlLoader.<VentaDetalleDialogController>getController();
-            controller.setObservableList(observableList);
+      Scene scene = new Scene(parent);
+      Stage stage = new Stage();
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.setScene(scene);
+      stage.setTitle("Producto");
+      stage.setResizable(false);
+      stage.showAndWait();
+    } catch (IOException ex) {
+      Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }
 
-            Scene scene = new Scene(parent);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(scene);
-            stage.setTitle("Producto");
-            stage.setResizable(false);
-            stage.showAndWait();
-          } catch (IOException ex) {
-            Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        });
+  @FXML
+  private void onActionBtnGuardar(ActionEvent event) {}
 
+  @FXML
+  private void onActionBtnLimpiar(ActionEvent event) {}
+
+  private void initTable() {
     tcCodigo.setCellValueFactory(
         c -> new SimpleStringProperty(c.getValue().getProducto().getCodigo()));
-
     tcDescripcion.setCellValueFactory(
         c -> new SimpleStringProperty(c.getValue().getProducto().getDescripcion()));
-
     tcUnidadMedida.setCellValueFactory(
         c ->
             new SimpleStringProperty(
                 UnidadMedida.values()[c.getValue().getProducto().getUnidadMedida()]
                     .getDescripcion()));
-
     tcCantidad.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getCantidad()));
-
     tcPrecioUnitario.setCellValueFactory(
         c -> new SimpleObjectProperty<>(c.getValue().getPrecioUnitario()));
-
     tcSubtotal.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getSubtotal()));
 
     table.setItems(observableList);

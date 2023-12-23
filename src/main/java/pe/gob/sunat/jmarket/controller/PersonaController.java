@@ -3,6 +3,7 @@ package pe.gob.sunat.jmarket.controller;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,27 +20,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.remixicon.RemixiconAL;
-import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.num.Estado;
 import pe.gob.sunat.jmarket.model.num.TipoDocumento;
-import pe.gob.sunat.jmarket.util.MyTextFieldFormat;
 
 public class PersonaController implements Initializable {
+  @FXML private TextField tfId;
+  @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
+  @FXML private TextField tfNumeroDocumento;
+  @FXML private TextField tfPrimerNombre;
+  @FXML private TextField tfSegundoNombre;
+  @FXML private TextField tfApellidoPaterno;
+  @FXML private TextField tfApellidoMaterno;
   @FXML private Button btnGuardar;
-  @FXML private Button btnLimpiar;
-  @FXML private TextField txtId;
-  @FXML private ComboBox<TipoDocumento> cbxTipoDocumento;
-  @FXML private TextField txtNumeroDocumento;
-  @FXML private TextField txtPrimerNombre;
-  @FXML private TextField txtSegundoNombre;
-  @FXML private TextField txtApellidoPaterno;
-  @FXML private TextField txtApellidoMaterno;
-  @FXML private TextField txtFiltro;
+
+  @FXML private TextField tfFiltro;
   @FXML private TableView<Persona> table;
   @FXML private TableColumn<Persona, Long> tcId;
   @FXML private TableColumn<Persona, String> tcTipoDocumento;
@@ -61,20 +58,31 @@ public class PersonaController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    initUI();
+    cbTipoDocumento.getItems().addAll(TipoDocumento.values());
+    cbTipoDocumento.getSelectionModel().selectFirst();
+
+    btnGuardar
+        .disableProperty()
+        .bind(
+            Bindings.isEmpty(tfNumeroDocumento.textProperty())
+                .or(Bindings.isEmpty(tfPrimerNombre.textProperty()))
+                .or(Bindings.isEmpty(tfSegundoNombre.textProperty()))
+                .or(Bindings.isEmpty(tfSegundoNombre.textProperty()))
+                .or(Bindings.isEmpty(tfApellidoPaterno.textProperty()))
+                .or(Bindings.isEmpty(tfApellidoMaterno.textProperty())));
 
     initTable();
   }
 
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
-    String id = txtId.getText().trim();
-    int tipoDocumento = cbxTipoDocumento.getValue().getCodigo();
-    String numeroDocumento = txtNumeroDocumento.getText().trim();
-    String primerNombre = txtPrimerNombre.getText().trim();
-    String segundoNombre = txtSegundoNombre.getText().trim();
-    String apellidoPaterno = txtApellidoPaterno.getText().trim();
-    String apellidoMaterno = txtApellidoMaterno.getText().trim();
+    String id = tfId.getText().trim();
+    int tipoDocumento = cbTipoDocumento.getValue().getCodigo();
+    String numeroDocumento = tfNumeroDocumento.getText().trim();
+    String primerNombre = tfPrimerNombre.getText().trim();
+    String segundoNombre = tfSegundoNombre.getText().trim();
+    String apellidoPaterno = tfApellidoPaterno.getText().trim();
+    String apellidoMaterno = tfApellidoMaterno.getText().trim();
 
     if (id.equals("")) {
       persona = new Persona();
@@ -127,29 +135,17 @@ public class PersonaController implements Initializable {
     if (event.getClickCount() == 2) {
       persona = (Persona) table.getSelectionModel().getSelectedItem();
 
-      cbxTipoDocumento.setDisable(true);
-      txtNumeroDocumento.setDisable(true);
+      cbTipoDocumento.setDisable(true);
+      tfNumeroDocumento.setDisable(true);
 
-      txtId.setText(this.persona.getId().toString());
-      cbxTipoDocumento.getSelectionModel().select(this.persona.getTipoDocumento());
-      txtNumeroDocumento.setText(this.persona.getNumeroDocumento());
-      txtPrimerNombre.setText(this.persona.getPrimerNombre());
-      txtSegundoNombre.setText(this.persona.getSegundoNombre());
-      txtApellidoPaterno.setText(this.persona.getApellidoPaterno());
-      txtApellidoMaterno.setText(this.persona.getApellidoMaterno());
+      tfId.setText(persona.getId().toString());
+      cbTipoDocumento.getSelectionModel().select(persona.getTipoDocumento());
+      tfNumeroDocumento.setText(persona.getNumeroDocumento());
+      tfPrimerNombre.setText(persona.getPrimerNombre());
+      tfSegundoNombre.setText(persona.getSegundoNombre());
+      tfApellidoPaterno.setText(persona.getApellidoPaterno());
+      tfApellidoMaterno.setText(persona.getApellidoMaterno());
     }
-  }
-
-  private void initUI() {
-    btnGuardar.setGraphic(FontIcon.of(RemixiconMZ.SAVE_LINE, 16));
-    btnLimpiar.setGraphic(FontIcon.of(RemixiconAL.ERASER_LINE, 16));
-
-    cbxTipoDocumento.getItems().addAll(TipoDocumento.values());
-
-    MyTextFieldFormat.toUpperCase(txtPrimerNombre);
-    MyTextFieldFormat.toUpperCase(txtSegundoNombre);
-    MyTextFieldFormat.toUpperCase(txtApellidoPaterno);
-    MyTextFieldFormat.toUpperCase(txtApellidoMaterno);
   }
 
   private void initTable() {
@@ -174,7 +170,7 @@ public class PersonaController implements Initializable {
     FilteredList<Persona> filteredList = new FilteredList<>(observableList, p -> true);
     table.setItems(filteredList);
 
-    txtFiltro
+    tfFiltro
         .textProperty()
         .addListener(
             (observable, oldValue, newValue) -> {
@@ -215,15 +211,15 @@ public class PersonaController implements Initializable {
   private void clearUI() {
     persona = null;
 
-    cbxTipoDocumento.setDisable(false);
-    txtNumeroDocumento.setDisable(false);
+    cbTipoDocumento.setDisable(false);
+    tfNumeroDocumento.setDisable(false);
 
-    txtId.clear();
-    cbxTipoDocumento.getSelectionModel().clearSelection();
-    txtNumeroDocumento.clear();
-    txtPrimerNombre.clear();
-    txtSegundoNombre.clear();
-    txtApellidoPaterno.clear();
-    txtApellidoMaterno.clear();
+    tfId.clear();
+    cbTipoDocumento.getSelectionModel().clearSelection();
+    tfNumeroDocumento.clear();
+    tfPrimerNombre.clear();
+    tfSegundoNombre.clear();
+    tfApellidoPaterno.clear();
+    tfApellidoMaterno.clear();
   }
 }

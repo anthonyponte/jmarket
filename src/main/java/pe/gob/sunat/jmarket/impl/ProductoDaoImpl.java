@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.gob.sunat.jmarket.impl;
 
 import java.sql.PreparedStatement;
@@ -16,13 +11,10 @@ import pe.gob.sunat.jmarket.dao.ProductoDao;
 import pe.gob.sunat.jmarket.model.Producto;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
-/**
- * @author anthonyponte
- */
-public class IProductoDao implements ProductoDao {
+public class ProductoDaoImpl implements ProductoDao {
   private final MyHsqldbConnection database;
 
-  public IProductoDao() {
+  public ProductoDaoImpl() {
     this.database = new MyHsqldbConnection();
   }
 
@@ -52,7 +44,7 @@ public class IProductoDao implements ProductoDao {
       }
 
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -86,7 +78,7 @@ public class IProductoDao implements ProductoDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -120,7 +112,7 @@ public class IProductoDao implements ProductoDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -143,7 +135,7 @@ public class IProductoDao implements ProductoDao {
 
       ps.executeUpdate();
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -159,7 +151,7 @@ public class IProductoDao implements ProductoDao {
       ps.setLong(1, id);
       ps.executeUpdate();
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -191,7 +183,7 @@ public class IProductoDao implements ProductoDao {
         }
       }
     } catch (SQLException ex) {
-      Logger.getLogger(IProductoDao.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
