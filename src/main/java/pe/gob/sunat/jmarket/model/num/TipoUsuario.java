@@ -10,7 +10,8 @@ package pe.gob.sunat.jmarket.model.num;
  */
 public enum TipoUsuario {
   ADMINISTRADOR(0, "ADMINISTRADOR"),
-  CLIENTE(1, "CLIENTE");
+  USUARIO(1, "USUARIO"),
+  CLIENTE(2, "CLIENTE");
 
   private final int codigo;
   private final String descripcion;

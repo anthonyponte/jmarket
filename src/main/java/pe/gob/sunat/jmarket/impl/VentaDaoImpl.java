@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import pe.gob.sunat.jmarket.dao.VentaDao;
 import pe.gob.sunat.jmarket.model.Venta;
+import pe.gob.sunat.jmarket.model.VentaDetalle;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
 
 public class VentaDaoImpl implements VentaDao {
@@ -24,20 +25,46 @@ public class VentaDaoImpl implements VentaDao {
 
     database.connect();
 
-    String query =
-        "INSERT INTO VENTA (TIPO_USUARIO, NOMBRE_USUARIO, CONTRASENA, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?, ?)";
+    String queryCabecera =
+        "INSERT INTO VENTA (FECHA_EMISION, TOTAL, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?)";
+    
+    String queryDetalle =
+        "INSERT INTO VENTA_DETALLE (NUMERO_FILA, PRECIO_UNITARIO, CANTIDAD, SUBTOTAL, "
+            + "ESTADO, PRODUCTO_ID, VENTA_ID) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    try (PreparedStatement ps =
-        database.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement psCabecera =
+        database
+            .getConnection()
+            .prepareStatement(queryCabecera, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setDate(1, Date.valueOf(o.getFechaEmision()));
-      ps.setInt(2, o.getEstado());
-      ps.setLong(3, o.getPersona().getId());
-      ps.executeUpdate();
+      psCabecera.setDate(1, Date.valueOf(o.getFechaEmision()));
+      psCabecera.setBigDecimal(2, o.getTotal());
+      psCabecera.setInt(3, o.getEstado());
+      psCabecera.setLong(4, o.getPersona().getId());
+      psCabecera.executeUpdate();
 
-      try (ResultSet rs = ps.getGeneratedKeys()) {
-        while (rs.next()) {
-          id = rs.getLong(1);
+      try (ResultSet rsCabecera = psCabecera.getGeneratedKeys()) {
+        while (rsCabecera.next()) {
+          id = rsCabecera.getLong(1);
+
+          try (PreparedStatement psDetalle =
+              database.getConnection().prepareStatement(queryDetalle)) {
+            for (int i = 0; i < o.getDetalles().size(); i++) {
+              VentaDetalle d = o.getDetalles().get(i);
+              psDetalle.setInt(1, i + 1);
+              psDetalle.setDouble(2, d.getPrecioUnitario());
+              psDetalle.setDouble(3, d.getCantidad());
+              psDetalle.setDouble(4, d.getSubtotal());
+              psDetalle.setInt(5, d.getEstado());
+              psDetalle.setLong(6, d.getProducto().getId());
+              psDetalle.setLong(7, id);
+
+              psDetalle.addBatch();
+            }
+
+            psDetalle.executeBatch();
+          }
         }
       }
 

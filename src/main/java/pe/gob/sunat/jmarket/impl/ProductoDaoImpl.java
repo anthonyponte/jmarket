@@ -33,7 +33,7 @@ public class ProductoDaoImpl implements ProductoDao {
       ps.setString(1, producto.getCodigo());
       ps.setString(2, producto.getDescripcion());
       ps.setInt(3, producto.getUnidadMedida());
-      ps.setBigDecimal(4, producto.getPrecioUnitario());
+      ps.setDouble(4, producto.getPrecioUnitario());
       ps.setInt(5, producto.getEstado());
       ps.executeUpdate();
 
@@ -73,7 +73,7 @@ public class ProductoDaoImpl implements ProductoDao {
           producto.setCodigo(rs.getString(2));
           producto.setDescripcion(rs.getString(3));
           producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getBigDecimal(5));
+          producto.setPrecioUnitario(rs.getDouble(5));
           producto.setEstado(rs.getInt(6));
         }
       }
@@ -105,7 +105,7 @@ public class ProductoDaoImpl implements ProductoDao {
           producto.setCodigo(rs.getString(2));
           producto.setDescripcion(rs.getString(3));
           producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getBigDecimal(5));
+          producto.setPrecioUnitario(rs.getDouble(5));
           producto.setEstado(rs.getInt(6));
 
           list.add(producto);
@@ -130,7 +130,7 @@ public class ProductoDaoImpl implements ProductoDao {
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setString(1, producto.getDescripcion());
       ps.setInt(2, producto.getUnidadMedida());
-      ps.setBigDecimal(3, producto.getPrecioUnitario());
+      ps.setDouble(3, producto.getPrecioUnitario());
       ps.setLong(4, producto.getId());
 
       ps.executeUpdate();
@@ -178,7 +178,7 @@ public class ProductoDaoImpl implements ProductoDao {
           producto.setCodigo(rs.getString(2));
           producto.setDescripcion(rs.getString(3));
           producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getBigDecimal(5));
+          producto.setPrecioUnitario(rs.getDouble(5));
           producto.setEstado(rs.getInt(6));
         }
       }

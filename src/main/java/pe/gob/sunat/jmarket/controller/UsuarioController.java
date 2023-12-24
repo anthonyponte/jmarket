@@ -39,7 +39,7 @@ public class UsuarioController implements Initializable {
   @FXML private ComboBox<TipoUsuario> cbTipoUsuario;
   @FXML private TextField tfNombreUsuario;
   @FXML private PasswordField pfContrasena;
-  @FXML private Button btnBuscar;
+  @FXML private Button btnBuscarPersona;
   @FXML private Button btnGuardar;
 
   @FXML private TextField tfFiltro;
@@ -65,8 +65,6 @@ public class UsuarioController implements Initializable {
   public void initialize(URL url, ResourceBundle rb) {
     cbTipoDocumento.getItems().addAll(TipoDocumento.values());
     cbTipoUsuario.getItems().addAll(TipoUsuario.values());
-    cbTipoDocumento.getSelectionModel().selectFirst();
-    cbTipoUsuario.getSelectionModel().selectFirst();
 
     btnGuardar
         .disableProperty()
@@ -80,7 +78,7 @@ public class UsuarioController implements Initializable {
   }
 
   @FXML
-  private void onActionBtnBuscar(ActionEvent event) {
+  private void onActionBtnBuscarPersona(ActionEvent event) {
     String numeroDocumento = tfNumeroDocumento.getText().trim();
     if (numeroDocumento.equals("")) return;
     persona = personaDao.read(numeroDocumento);
@@ -131,6 +129,9 @@ public class UsuarioController implements Initializable {
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
       Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
+
+      if (usuario == null) return;
+
       usuarioDao.delete(usuario.getId());
       observableList.remove(usuario);
     }
@@ -140,11 +141,12 @@ public class UsuarioController implements Initializable {
   private void onMouseClickedTable(MouseEvent event) {
     if (event.getClickCount() == 2) {
       usuario = (Usuario) table.getSelectionModel().getSelectedItem();
-      table.getSelectionModel().getSelectedIndex();
+
+      if (usuario == null) return;
 
       cbTipoDocumento.setDisable(true);
       tfNumeroDocumento.setDisable(true);
-      btnBuscar.setDisable(true);
+      btnBuscarPersona.setDisable(true);
 
       tfId.setText(usuario.getId().toString());
       cbTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
@@ -211,7 +213,7 @@ public class UsuarioController implements Initializable {
 
     cbTipoDocumento.setDisable(false);
     tfNumeroDocumento.setDisable(false);
-    btnBuscar.setDisable(false);
+    btnBuscarPersona.setDisable(false);
 
     tfId.clear();
     cbTipoDocumento.getSelectionModel().clearSelection();

@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Menu;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.model.Usuario;
 
@@ -28,7 +29,7 @@ public class MainController implements Initializable {
       FXMLLoader fXMLLoader = App.loadFXML("PersonaView");
       Parent parent = fXMLLoader.load();
       fXMLLoader.<UsuarioController>getController();
-      bpMain.setCenter(parent);
+      setCenter(parent, "JMarket - Persona");
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -40,7 +41,7 @@ public class MainController implements Initializable {
       FXMLLoader fXMLLoader = App.loadFXML("UsuarioView");
       Parent parent = fXMLLoader.load();
       fXMLLoader.<UsuarioController>getController();
-      bpMain.setCenter(parent);
+      setCenter(parent, "JMarket - Usuario");
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -52,7 +53,7 @@ public class MainController implements Initializable {
       FXMLLoader fXMLLoader = App.loadFXML("ProductoView");
       Parent parent = fXMLLoader.load();
       fXMLLoader.<ProductoController>getController();
-      bpMain.setCenter(parent);
+      setCenter(parent, "JMarket - Producto");
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -64,10 +65,16 @@ public class MainController implements Initializable {
       FXMLLoader fXMLLoader = App.loadFXML("VentaView");
       Parent parent = fXMLLoader.load();
       fXMLLoader.<ProductoController>getController();
-      bpMain.setCenter(parent);
+      setCenter(parent, "JMarket - Venta");
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
+  }
+
+  private void setCenter(Parent parent, String title) {
+    bpMain.setCenter(parent);
+    Stage stage = (Stage) bpMain.getScene().getWindow();
+    stage.setTitle(title);
   }
 
   public void setUsuario(Usuario usuario) {

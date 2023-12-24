@@ -1,6 +1,5 @@
 package pe.gob.sunat.jmarket.controller;
 
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -9,9 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pe.gob.sunat.jmarket.dao.ProductoDao;
+import pe.gob.sunat.jmarket.impl.ProductoDaoImpl;
 import pe.gob.sunat.jmarket.model.Producto;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
 import pe.gob.sunat.jmarket.model.num.Estado;
@@ -23,13 +24,18 @@ public class VentaDetalleController implements Initializable {
   @FXML private TextField tfUnidadMedida;
   @FXML private TextField tfPrecioUnitario;
   @FXML private TextField tfCantidad;
-  @FXML private TextField tfSubtotal;
+  @FXML private Button btnBuscarProducto;
   @FXML private Button btnGuardar;
 
   private VentaDetalle detalle;
   private Producto producto;
   private ObservableList<VentaDetalle> observableList;
+  private TableView<VentaDetalle> table;
   private ProductoDao dao;
+
+  public VentaDetalleController() {
+    dao = new ProductoDaoImpl();
+  }
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -40,14 +46,15 @@ public class VentaDetalleController implements Initializable {
                 .and(Bindings.isEmpty(tfDescripcion.textProperty()))
                 .and(Bindings.isEmpty(tfUnidadMedida.textProperty()))
                 .and(Bindings.isEmpty(tfCantidad.textProperty()))
-                .and(Bindings.isEmpty(tfPrecioUnitario.textProperty()))
-                .and(Bindings.isEmpty(tfSubtotal.textProperty())));
+                .and(Bindings.isEmpty(tfPrecioUnitario.textProperty())));
   }
 
   @FXML
-  private void onActionBtnBuscar(ActionEvent event) {
+  private void onActionBtnBuscarProducto(ActionEvent event) {
     String codigo = tfCodigo.getText().trim();
+
     if (codigo.equals("")) return;
+
     producto = dao.read(codigo);
     tfDescripcion.setText(producto.getDescripcion());
     tfUnidadMedida.setText(UnidadMedida.values()[producto.getUnidadMedida()].getDescripcion());
@@ -56,21 +63,25 @@ public class VentaDetalleController implements Initializable {
 
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
-    String codigo = tfCodigo.getText().toUpperCase();
-    String descripcion = tfDescripcion.getText().toUpperCase();
-    String unidadMedida = tfUnidadMedida.getText().toUpperCase();
-    BigDecimal precioUnitario = new BigDecimal(tfPrecioUnitario.getText().trim());
-    BigDecimal cantidad = new BigDecimal(tfCantidad.getText().trim());
-    BigDecimal subtotal = precioUnitario.multiply(cantidad);
+    double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
+    double cantidad = Double.parseDouble(tfCantidad.getText().trim());
+    double subtotal = precioUnitario * cantidad;
 
-    detalle = new VentaDetalle();
-    detalle.setPrecioUnitario(precioUnitario);
-    detalle.setCantidad(cantidad);
-    detalle.setSubtotal(subtotal);
-    detalle.setEstado(Estado.ACTIVO.getCodigo());
-    detalle.setProducto(producto);
+    if (detalle == null) {
+      detalle = new VentaDetalle();
+      detalle.setPrecioUnitario(precioUnitario);
+      detalle.setCantidad(cantidad);
+      detalle.setSubtotal(subtotal);
+      detalle.setEstado(Estado.ACTIVO.getCodigo());
+      detalle.setProducto(producto);
 
-    observableList.add(detalle);
+      observableList.add(detalle);
+    } else {
+      detalle.setCantidad(cantidad);
+      detalle.setSubtotal(subtotal);
+
+      table.refresh();
+    }
 
     Stage stage = (Stage) btnGuardar.getScene().getWindow();
     stage.close();
@@ -78,5 +89,23 @@ public class VentaDetalleController implements Initializable {
 
   public void setObservableList(ObservableList<VentaDetalle> observableList) {
     this.observableList = observableList;
+  }
+
+  public void setDetalle(VentaDetalle detalle) {
+    this.detalle = detalle;
+
+    tfCodigo.setDisable(true);
+    btnBuscarProducto.setDisable(true);
+
+    tfCodigo.setText(detalle.getProducto().getCodigo());
+    tfDescripcion.setText(detalle.getProducto().getDescripcion());
+    tfUnidadMedida.setText(
+        UnidadMedida.values()[detalle.getProducto().getUnidadMedida()].getDescripcion());
+    tfPrecioUnitario.setText(String.valueOf(detalle.getPrecioUnitario()));
+    tfCantidad.setText(String.valueOf(detalle.getCantidad()));
+  }
+
+  public void setTable(TableView<VentaDetalle> table) {
+    this.table = table;
   }
 }

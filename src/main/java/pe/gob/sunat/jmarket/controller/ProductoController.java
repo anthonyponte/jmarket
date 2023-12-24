@@ -41,7 +41,7 @@ public class ProductoController implements Initializable {
   @FXML private TableColumn<Producto, String> tcCodigo;
   @FXML private TableColumn<Producto, String> tcDescripcion;
   @FXML private TableColumn<Producto, String> tcUnidadMedida;
-  @FXML private TableColumn<Producto, BigDecimal> tcPrecioUnitario;
+  @FXML private TableColumn<Producto, Double> tcPrecioUnitario;
   @FXML private TableColumn<Producto, String> tcEstado;
 
   private Producto producto;
@@ -56,7 +56,6 @@ public class ProductoController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     cbUnidadMedida.getItems().addAll(UnidadMedida.values());
-    cbUnidadMedida.getSelectionModel().selectFirst();
 
     btnGuardar
         .disableProperty()
@@ -74,7 +73,7 @@ public class ProductoController implements Initializable {
     String codigo = tfCodigo.getText().trim();
     String descripcion = tfDescripcion.getText().trim();
     int unidadMedida = cbUnidadMedida.getValue().getId();
-    BigDecimal precioUnitario = new BigDecimal(tfPrecioUnitario.getText().trim());
+    double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
 
     if (id.equals("")) {
       producto = new Producto();
@@ -114,6 +113,9 @@ public class ProductoController implements Initializable {
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
       Producto producto = (Producto) table.getSelectionModel().getSelectedItem();
+
+      if (producto == null) return;
+
       dao.delete(producto.getId());
       observableList.remove(producto);
     }
@@ -123,7 +125,8 @@ public class ProductoController implements Initializable {
   private void onMouseClickedTable(MouseEvent event) {
     if (event.getClickCount() == 2) {
       producto = (Producto) table.getSelectionModel().getSelectedItem();
-      table.getSelectionModel().getSelectedIndex();
+
+      if (producto == null) return;
 
       tfCodigo.setDisable(true);
 
@@ -131,7 +134,7 @@ public class ProductoController implements Initializable {
       tfCodigo.setText(producto.getCodigo());
       tfDescripcion.setText(producto.getDescripcion());
       cbUnidadMedida.getSelectionModel().select(producto.getUnidadMedida());
-      tfPrecioUnitario.setText(producto.getPrecioUnitario().toString());
+      tfPrecioUnitario.setText(String.valueOf(producto.getPrecioUnitario()));
     }
   }
 

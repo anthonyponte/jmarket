@@ -6,32 +6,32 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:id="bpMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.MainController">
-   <top>
-      <HBox>
-         <children>
-            <MenuBar HBox.hgrow="ALWAYS">
-              <menus>
-                <Menu mnemonicParsing="false" text="Menu">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onActionMiPersona" text="Persona" />
-                      <MenuItem mnemonicParsing="false" onAction="#onActionMiUsuario" text="Usuario" />
-                      <MenuItem mnemonicParsing="false" onAction="#onActionMiProducto" text="Producto" />
-                      <MenuItem mnemonicParsing="false" onAction="#onActionMiVenta" text="Venta" />
-                     </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-            <MenuBar>
-              <menus>
-                <Menu fx:id="mnUsuario" mnemonicParsing="false" text="Usuario">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Salir" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
-      </HBox>
-   </top>
+<BorderPane fx:id="bpMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.MainController">
+    <top>
+        <HBox>
+            <children>
+                <MenuBar HBox.hgrow="ALWAYS">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="Menu">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onActionMiPersona" text="Persona" />
+                                <MenuItem mnemonicParsing="false" onAction="#onActionMiUsuario" text="Usuario" />
+                                <MenuItem mnemonicParsing="false" onAction="#onActionMiProducto" text="Producto" />
+                                <MenuItem mnemonicParsing="false" onAction="#onActionMiVenta" text="Venta" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <MenuBar>
+                    <menus>
+                        <Menu fx:id="mnUsuario" mnemonicParsing="false" text="Usuario">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Salir" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </children>
+        </HBox>
+    </top>
 </BorderPane>

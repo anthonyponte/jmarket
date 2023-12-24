@@ -7,7 +7,7 @@ public class Producto {
   private String codigo;
   private String descripcion;
   private int unidadMedida;
-  private BigDecimal precioUnitario;
+  private double precioUnitario;
   private int estado;
 
   public Producto() {}
@@ -17,7 +17,7 @@ public class Producto {
       String codigo,
       String descripcion,
       int unidadMedida,
-      BigDecimal precioUnitario,
+      double precioUnitario,
       int estado) {
     this.id = id;
     this.codigo = codigo;
@@ -28,7 +28,7 @@ public class Producto {
   }
 
   public Producto(
-      String codigo, String descripcion, int unidadMedida, BigDecimal precioUnitario, int estado) {
+      String codigo, String descripcion, int unidadMedida, double precioUnitario, int estado) {
     this.codigo = codigo;
     this.descripcion = descripcion;
     this.unidadMedida = unidadMedida;
@@ -68,11 +68,11 @@ public class Producto {
     this.unidadMedida = unidadMedida;
   }
 
-  public BigDecimal getPrecioUnitario() {
+  public double getPrecioUnitario() {
     return precioUnitario;
   }
 
-  public void setPrecioUnitario(BigDecimal precioUnitario) {
+  public void setPrecioUnitario(double precioUnitario) {
     this.precioUnitario = precioUnitario;
   }
 

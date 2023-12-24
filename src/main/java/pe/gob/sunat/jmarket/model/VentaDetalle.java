@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 public class VentaDetalle {
   private Long id;
   private int numeroFila;
-  private BigDecimal precioUnitario;
-  private BigDecimal cantidad;
-  private BigDecimal subtotal;
+  private double precioUnitario;
+  private double cantidad;
+  private double subtotal;
   private int estado;
   private Producto producto;
   private Venta venta;
@@ -17,9 +17,9 @@ public class VentaDetalle {
   public VentaDetalle(
       Long id,
       int numeroFila,
-      BigDecimal precioUnitario,
-      BigDecimal cantidad,
-      BigDecimal subtotal,
+      double precioUnitario,
+      double cantidad,
+      double subtotal,
       int estado,
       Producto producto,
       Venta venta) {
@@ -35,9 +35,9 @@ public class VentaDetalle {
 
   public VentaDetalle(
       int numeroFila,
-      BigDecimal precioUnitario,
-      BigDecimal cantidad,
-      BigDecimal subtotal,
+      double precioUnitario,
+      double cantidad,
+      double subtotal,
       int estado,
       Producto producto,
       Venta venta) {
@@ -66,27 +66,27 @@ public class VentaDetalle {
     this.numeroFila = numeroFila;
   }
 
-  public BigDecimal getPrecioUnitario() {
+  public double getPrecioUnitario() {
     return precioUnitario;
   }
 
-  public void setPrecioUnitario(BigDecimal precioUnitario) {
+  public void setPrecioUnitario(double precioUnitario) {
     this.precioUnitario = precioUnitario;
   }
 
-  public BigDecimal getCantidad() {
+  public double getCantidad() {
     return cantidad;
   }
 
-  public void setCantidad(BigDecimal cantidad) {
+  public void setCantidad(double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public BigDecimal getSubtotal() {
+  public double getSubtotal() {
     return subtotal;
   }
 
-  public void setSubtotal(BigDecimal subtotal) {
+  public void setSubtotal(double subtotal) {
     this.subtotal = subtotal;
   }
 

@@ -59,7 +59,6 @@ public class PersonaController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     cbTipoDocumento.getItems().addAll(TipoDocumento.values());
-    cbTipoDocumento.getSelectionModel().selectFirst();
 
     btnGuardar
         .disableProperty()
@@ -125,6 +124,9 @@ public class PersonaController implements Initializable {
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
       Persona persona = (Persona) table.getSelectionModel().getSelectedItem();
+      
+      if (persona == null) return;
+      
       dao.delete(persona.getId());
       observableList.remove(persona);
     }
@@ -134,6 +136,8 @@ public class PersonaController implements Initializable {
   private void onMouseClickedTable(MouseEvent event) {
     if (event.getClickCount() == 2) {
       persona = (Persona) table.getSelectionModel().getSelectedItem();
+      
+      if (persona == null) return;
 
       cbTipoDocumento.setDisable(true);
       tfNumeroDocumento.setDisable(true);
