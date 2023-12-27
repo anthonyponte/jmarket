@@ -1,11 +1,12 @@
 package pe.gob.sunat.jmarket.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -25,13 +26,14 @@ import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
 import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.impl.UsuarioDaoImpl;
-import pe.gob.sunat.jmarket.model.num.Estado;
+import pe.gob.sunat.jmarket.model.enums.Estado;
 import pe.gob.sunat.jmarket.model.Persona;
-import pe.gob.sunat.jmarket.model.num.TipoDocumento;
-import pe.gob.sunat.jmarket.model.num.TipoUsuario;
+import pe.gob.sunat.jmarket.model.enums.TipoDocumento;
+import pe.gob.sunat.jmarket.model.enums.TipoUsuario;
 import pe.gob.sunat.jmarket.model.Usuario;
 
 public class UsuarioController implements Initializable {
+  @FXML private ComboBox<Estado> cbEstado;
   @FXML private TextField tfId;
   @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
   @FXML private TextField tfNumeroDocumento;
@@ -63,14 +65,17 @@ public class UsuarioController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    cbEstado.getItems().addAll(Estado.values());
     cbTipoDocumento.getItems().addAll(TipoDocumento.values());
     cbTipoUsuario.getItems().addAll(TipoUsuario.values());
 
     btnGuardar
         .disableProperty()
         .bind(
-            Bindings.isEmpty(tfNumeroDocumento.textProperty())
+            Bindings.isNull(cbTipoDocumento.valueProperty())
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
                 .or(Bindings.isEmpty(tfNombreCompleto.textProperty()))
+                .or(Bindings.isNull(cbTipoUsuario.valueProperty()))
                 .or(Bindings.isEmpty(tfNombreUsuario.textProperty()))
                 .or(Bindings.isEmpty(pfContrasena.textProperty())));
 
@@ -79,44 +84,58 @@ public class UsuarioController implements Initializable {
 
   @FXML
   private void onActionBtnBuscarPersona(ActionEvent event) {
-    String numeroDocumento = tfNumeroDocumento.getText().trim();
-    if (numeroDocumento.equals("")) return;
-    persona = personaDao.read(numeroDocumento);
-    tfNombreCompleto.setText(persona.getNombreCompleto());
+    try {
+      String numeroDocumento = tfNumeroDocumento.getText().trim();
+      if (numeroDocumento.equals("")) return;
+      persona = personaDao.read(numeroDocumento);
+      tfNombreCompleto.setText(persona.getNombreCompleto());
+    } catch (SQLException ex) {
+      Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
     String id = tfId.getText().trim();
-    int tipoUsuario = cbTipoUsuario.getValue().getCodigo();
-    String nombreUsuario = tfNombreUsuario.getText().trim();
-    String contrasena = pfContrasena.getText().trim();
-
     if (id.equals("")) {
-      usuario = new Usuario();
-      usuario.setTipoUsuario(tipoUsuario);
-      usuario.setNombreUsuario(nombreUsuario);
-      usuario.setContrasena(contrasena);
-      usuario.setEstado(Estado.ACTIVO.getCodigo());
-      usuario.setPersona(persona);
+      try {
+        int tipoUsuario = cbTipoUsuario.getValue().getCodigo();
+        String nombreUsuario = tfNombreUsuario.getText().trim();
+        String contrasena = pfContrasena.getText().trim();
 
-      Long idUsuario = usuarioDao.create(usuario);
-      if (idUsuario > 0) {
-        usuario.setId(idUsuario);
+        usuario =
+            new Usuario(tipoUsuario, nombreUsuario, contrasena, Estado.ACTIVO.getCodigo(), persona);
 
-        observableList.add(usuario);
+        Long idUsuario = usuarioDao.create(usuario);
+        if (idUsuario > 0) {
+          usuario.setId(idUsuario);
 
-        clearUI();
+          observableList.add(usuario);
+
+          clearUI();
+        }
+      } catch (SQLException ex) {
+        Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
       }
     } else {
-      usuario.setTipoUsuario(tipoUsuario);
-      usuario.setNombreUsuario(nombreUsuario);
-      usuario.setContrasena(contrasena);
-      usuarioDao.update(usuario);
+      try {
+        int estado = cbEstado.getValue().getCodigo();
+        int tipoUsuario = cbTipoUsuario.getValue().getCodigo();
+        String nombreUsuario = tfNombreUsuario.getText().trim();
+        String contrasena = pfContrasena.getText().trim();
 
-      table.refresh();
+        usuario.setEstado(estado);
+        usuario.setTipoUsuario(tipoUsuario);
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setContrasena(contrasena);
+        usuarioDao.update(usuario);
 
-      clearUI();
+        table.refresh();
+
+        clearUI();
+      } catch (SQLException ex) {
+        Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -128,12 +147,16 @@ public class UsuarioController implements Initializable {
   @FXML
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
-      Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
+      try {
+        Usuario usuario = (Usuario) table.getSelectionModel().getSelectedItem();
 
-      if (usuario == null) return;
+        if (usuario == null) return;
 
-      usuarioDao.delete(usuario.getId());
-      observableList.remove(usuario);
+        usuarioDao.delete(usuario.getId());
+        observableList.remove(usuario);
+      } catch (SQLException ex) {
+        Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -144,10 +167,12 @@ public class UsuarioController implements Initializable {
 
       if (usuario == null) return;
 
+      cbEstado.setDisable(false);
       cbTipoDocumento.setDisable(true);
       tfNumeroDocumento.setDisable(true);
       btnBuscarPersona.setDisable(true);
 
+      cbEstado.getSelectionModel().select(usuario.getEstado());
       tfId.setText(usuario.getId().toString());
       cbTipoDocumento.getSelectionModel().select(usuario.getPersona().getTipoDocumento());
       tfNumeroDocumento.setText(usuario.getPersona().getNumeroDocumento());
@@ -159,62 +184,65 @@ public class UsuarioController implements Initializable {
   }
 
   private void initTable() {
-    tcId.setCellValueFactory(c -> new SimpleObjectProperty(c.getValue().getId()));
-    tcTipoUsuario.setCellValueFactory(
-        c ->
-            new SimpleStringProperty(
-                TipoUsuario.values()[c.getValue().getTipoUsuario()].getDescripcion()));
-    tcNombreUsuario.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getNombreUsuario()));
-    tcEstado.setCellValueFactory(
-        c -> new SimpleStringProperty(Estado.values()[c.getValue().getEstado()].getDescripcion()));
+    try {
+      tcId.setCellValueFactory(c -> c.getValue().getIdProperty());
+      tcTipoUsuario.setCellValueFactory(
+          c -> TipoUsuario.values()[c.getValue().getTipoUsuario()].getDescripcionProperty());
+      tcNombreUsuario.setCellValueFactory(c -> c.getValue().getNombreUsuarioProperty());
+      tcEstado.setCellValueFactory(
+          c -> Estado.values()[c.getValue().getEstado()].getDescripcionProperty());
 
-    FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
-    table.setItems(filteredList);
+      FilteredList<Usuario> filteredList = new FilteredList<>(observableList, p -> true);
+      table.setItems(filteredList);
 
-    tfFiltro
-        .textProperty()
-        .addListener(
-            (observable, oldValue, newValue) -> {
-              filteredList.setPredicate(
-                  u -> {
-                    if (newValue == null || newValue.isEmpty()) {
-                      return true;
-                    }
+      tfFiltro
+          .textProperty()
+          .addListener(
+              (observable, oldValue, newValue) -> {
+                filteredList.setPredicate(
+                    u -> {
+                      if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                      }
 
-                    String value = newValue.toLowerCase();
+                      String value = newValue.toLowerCase();
 
-                    if (TipoUsuario.values()[u.getTipoUsuario()]
-                        .getDescripcion()
-                        .toLowerCase()
-                        .contains(value)) {
-                      return true;
-                    } else if (u.getNombreUsuario().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (Estado.values()[u.getEstado()]
-                        .getDescripcion()
-                        .toLowerCase()
-                        .contains(value)) {
-                      return true;
-                    }
+                      if (TipoUsuario.values()[u.getTipoUsuario()]
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(value)) {
+                        return true;
+                      } else if (u.getNombreUsuario().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (Estado.values()[u.getEstado()]
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(value)) {
+                        return true;
+                      }
 
-                    return false;
-                  });
-            });
+                      return false;
+                    });
+              });
 
-    List<Usuario> list = usuarioDao.read();
-    observableList.clear();
-    observableList.setAll(list);
+      List<Usuario> list = usuarioDao.read();
+      observableList.clear();
+      observableList.setAll(list);
+    } catch (SQLException ex) {
+      Logger.getLogger(UsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   private void clearUI() {
     usuario = null;
     persona = null;
 
+    cbEstado.setDisable(true);
     cbTipoDocumento.setDisable(false);
     tfNumeroDocumento.setDisable(false);
     btnBuscarPersona.setDisable(false);
 
+    cbEstado.getSelectionModel().clearSelection();
     tfId.clear();
     cbTipoDocumento.getSelectionModel().clearSelection();
     tfNumeroDocumento.clear();

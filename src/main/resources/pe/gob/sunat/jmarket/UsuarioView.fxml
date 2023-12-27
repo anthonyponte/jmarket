@@ -15,13 +15,14 @@
 
 <HBox xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.gob.sunat.jmarket.controller.UsuarioController">
     <children>
-        <GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0">
+        <GridPane hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="5.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" />
                 <ColumnConstraints hgrow="NEVER" />
                 <ColumnConstraints hgrow="NEVER" />
             </columnConstraints>
             <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
@@ -32,33 +33,35 @@
                 <RowConstraints vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                <Label text="Nombre Completo:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                <Label text="Tipo Usuario:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                <Label text="Nombre Usuario:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                <Label text="Contraseña:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-                <HBox alignment="CENTER" spacing="10.0" GridPane.columnSpan="3" GridPane.rowIndex="7">
+            <Label text="Estado:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                <Label text="Nombre Completo:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                <Label text="Tipo Usuario:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                <Label text="Nombre Usuario:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+                <Label text="Contraseña:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
+                <HBox alignment="CENTER" spacing="10.0" GridPane.columnSpan="3" GridPane.rowIndex="8">
                     <children>
                         <Button fx:id="btnGuardar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnGuardar" prefHeight="30.0" prefWidth="100.0" text="Guardar" />
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnLimpiar" prefHeight="30.0" prefWidth="100.0" text="Limpiar" />
                     </children>
                 </HBox>
-                <TextField fx:id="tfId" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" />
-                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <TextField fx:id="tfNombreCompleto" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="260.0" promptText="Nombre Completo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                <ComboBox fx:id="cbTipoUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <TextField fx:id="tfNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Nombre Usuario" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                <PasswordField fx:id="pfContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                <Button fx:id="btnBuscarPersona" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onActionBtnBuscarPersona" prefHeight="30.0" prefWidth="100.0" text="Persona" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <ComboBox fx:id="cbEstado" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Estado" GridPane.columnIndex="1" />
+                <TextField fx:id="tfId" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Tipo Documento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField fx:id="tfNombreCompleto" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="260.0" promptText="Nombre Completo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                <ComboBox fx:id="cbTipoUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Tipo Usuario" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <TextField fx:id="tfNombreUsuario" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Nombre Usuario" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <PasswordField fx:id="pfContrasena" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <Button fx:id="btnBuscarPersona" maxHeight="-Infinity" minHeight="-Infinity" mnemonicParsing="false" onAction="#onActionBtnBuscarPersona" prefHeight="30.0" prefWidth="100.0" text="Persona" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             </children>
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </GridPane>
-        <GridPane hgap="10.0" style="-fx-background-color: #F0F0F0;" vgap="10.0" HBox.hgrow="ALWAYS">
+        <GridPane hgap="5.0" style="-fx-background-color: #EAEAEA;" vgap="5.0" HBox.hgrow="ALWAYS">
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" />
             </columnConstraints>
@@ -81,7 +84,7 @@
                 </TableView>
             </children>
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </GridPane>
     </children>

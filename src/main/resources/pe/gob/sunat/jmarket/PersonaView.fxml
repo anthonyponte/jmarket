@@ -20,6 +20,7 @@
                 <ColumnConstraints hgrow="NEVER" />
             </columnConstraints>
             <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
@@ -30,26 +31,28 @@
                 <RowConstraints vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                <Label text="Primer Nombre:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                <Label text="Segundo Nombre:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                <Label text="Apellido Paterno:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                <Label text="Apellido Materno:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-                <HBox alignment="BOTTOM_CENTER" spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
+            <Label text="Estado:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                <Label text="Primer Nombre:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                <Label text="Segundo Nombre:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                <Label text="Apellido Paterno:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+                <Label text="Apellido Materno:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
+                <HBox alignment="BOTTOM_CENTER" spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="8">
                     <children>
                         <Button fx:id="btnGuardar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnGuardar" prefHeight="30.0" prefWidth="100.0" text="Guardar" />
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnLimpiar" prefHeight="30.0" prefWidth="100.0" text="Limpiar" />
                     </children>
                 </HBox>
-                <TextField fx:id="tfId" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" />
-                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Tipo Documento" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <TextField fx:id="tfPrimerNombre" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Primer Nombre" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <TextField fx:id="tfSegundoNombre" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Segundo Nombre" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                <TextField fx:id="tfApellidoPaterno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Apellido Paterno" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                <TextField fx:id="tfApellidoMaterno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Apellido Materno" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <ComboBox fx:id="cbEstado" disable="true" prefHeight="30.0" prefWidth="150.0" promptText="Estado" GridPane.columnIndex="1" />
+                <TextField fx:id="tfId" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Tipo Documento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField fx:id="tfPrimerNombre" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Primer Nombre" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <TextField fx:id="tfSegundoNombre" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Segundo Nombre" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <TextField fx:id="tfApellidoPaterno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Apellido Paterno" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <TextField fx:id="tfApellidoMaterno" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Apellido Materno" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             </children>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

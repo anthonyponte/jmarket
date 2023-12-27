@@ -20,14 +20,14 @@ public class VentaDaoImpl implements VentaDao {
   }
 
   @Override
-  public Long create(Venta o) {
+  public Long create(Venta o) throws SQLException {
     Long id = 0L;
 
     database.connect();
 
     String queryCabecera =
         "INSERT INTO VENTA (FECHA_EMISION, TOTAL, ESTADO, PERSONA_ID) VALUES (?, ?, ?, ?)";
-    
+
     String queryDetalle =
         "INSERT INTO VENTA_DETALLE (NUMERO_FILA, PRECIO_UNITARIO, CANTIDAD, SUBTOTAL, "
             + "ESTADO, PRODUCTO_ID, VENTA_ID) "
@@ -39,7 +39,7 @@ public class VentaDaoImpl implements VentaDao {
             .prepareStatement(queryCabecera, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
       psCabecera.setDate(1, Date.valueOf(o.getFechaEmision()));
-      psCabecera.setBigDecimal(2, o.getTotal());
+      psCabecera.setDouble(2, o.getTotal());
       psCabecera.setInt(3, o.getEstado());
       psCabecera.setLong(4, o.getPersona().getId());
       psCabecera.executeUpdate();
@@ -78,25 +78,25 @@ public class VentaDaoImpl implements VentaDao {
   }
 
   @Override
-  public Venta read(Long id) {
+  public Venta read(Long id) throws SQLException {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 
   @Override
-  public List<Venta> read() {
+  public List<Venta> read() throws SQLException {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 
   @Override
-  public void update(Venta o) {
+  public void update(Venta o) throws SQLException {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 
   @Override
-  public void delete(Long id) {
+  public void delete(Long id) throws SQLException {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from
     // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }

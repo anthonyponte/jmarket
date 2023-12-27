@@ -1,22 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package pe.gob.sunat.jmarket.model;
 
-/**
- * @author Anthony Ponte
- */
-public class Usuario {
-  private Long id;
-  private int tipoUsuario;
-  private String nombreUsuario;
-  private String contrasena;
-  private int estado;
-  private Persona persona;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-  public Usuario() {}
+public class Usuario {
+  private SimpleObjectProperty<Long> id;
+  private SimpleObjectProperty<Integer> tipoUsuario;
+  private SimpleStringProperty nombreUsuario;
+  private SimpleStringProperty contrasena;
+  private SimpleObjectProperty<Integer> estado;
+  private Persona persona;
 
   public Usuario(
       Long id,
@@ -25,61 +18,61 @@ public class Usuario {
       String contrasena,
       int estado,
       Persona persona) {
-    this.id = id;
-    this.tipoUsuario = tipoUsuario;
-    this.nombreUsuario = nombreUsuario;
-    this.contrasena = contrasena;
-    this.estado = estado;
+    this.id = new SimpleObjectProperty<>(id);
+    this.tipoUsuario = new SimpleObjectProperty<>(tipoUsuario);
+    this.nombreUsuario = new SimpleStringProperty(nombreUsuario);
+    this.contrasena = new SimpleStringProperty(contrasena);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
   }
 
   public Usuario(
       int tipoUsuario, String nombreUsuario, String contrasena, int estado, Persona persona) {
-    this.tipoUsuario = tipoUsuario;
-    this.nombreUsuario = nombreUsuario;
-    this.contrasena = contrasena;
-    this.estado = estado;
+    this.tipoUsuario = new SimpleObjectProperty<>(tipoUsuario);
+    this.nombreUsuario = new SimpleStringProperty(nombreUsuario);
+    this.contrasena = new SimpleStringProperty(contrasena);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
   }
 
   public Long getId() {
-    return id;
+    return id.get();
   }
 
   public void setId(Long id) {
-    this.id = id;
+    this.id.set(id);
   }
 
   public int getTipoUsuario() {
-    return tipoUsuario;
+    return tipoUsuario.get();
   }
 
   public void setTipoUsuario(int tipoUsuario) {
-    this.tipoUsuario = tipoUsuario;
+    this.tipoUsuario.set(tipoUsuario);
   }
 
   public String getNombreUsuario() {
-    return nombreUsuario;
+    return nombreUsuario.get();
   }
 
   public void setNombreUsuario(String nombreUsuario) {
-    this.nombreUsuario = nombreUsuario;
+    this.nombreUsuario.set(nombreUsuario);
   }
 
   public String getContrasena() {
-    return contrasena;
+    return contrasena.get();
   }
 
   public void setContrasena(String contrasena) {
-    this.contrasena = contrasena;
+    this.contrasena.set(contrasena);
   }
 
   public int getEstado() {
-    return estado;
+    return estado.get();
   }
 
   public void setEstado(int estado) {
-    this.estado = estado;
+    this.estado.set(estado);
   }
 
   public Persona getPersona() {
@@ -88,6 +81,26 @@ public class Usuario {
 
   public void setPersona(Persona persona) {
     this.persona = persona;
+  }
+
+  public SimpleObjectProperty<Long> getIdProperty() {
+    return id;
+  }
+
+  public SimpleObjectProperty<Integer> getTipoUsuarioProperty() {
+    return tipoUsuario;
+  }
+
+  public SimpleStringProperty getNombreUsuarioProperty() {
+    return nombreUsuario;
+  }
+
+  public SimpleStringProperty getContrasenaProperty() {
+    return contrasena;
+  }
+
+  public SimpleObjectProperty<Integer> getEstadoProperty() {
+    return estado;
   }
 
   @Override

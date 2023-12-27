@@ -1,24 +1,25 @@
 package pe.gob.sunat.jmarket.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pe.gob.sunat.jmarket.dao.ProductoDao;
 import pe.gob.sunat.jmarket.impl.ProductoDaoImpl;
 import pe.gob.sunat.jmarket.model.Producto;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
-import pe.gob.sunat.jmarket.model.num.Estado;
-import pe.gob.sunat.jmarket.model.num.UnidadMedida;
+import pe.gob.sunat.jmarket.model.enums.Estado;
+import pe.gob.sunat.jmarket.model.enums.UnidadMedida;
 
-public class VentaDetalleController implements Initializable {
+public class VentaDetalleDialogController implements Initializable {
   @FXML private TextField tfCodigo;
   @FXML private TextField tfDescripcion;
   @FXML private TextField tfUnidadMedida;
@@ -29,11 +30,10 @@ public class VentaDetalleController implements Initializable {
 
   private VentaDetalle detalle;
   private Producto producto;
-  private ObservableList<VentaDetalle> observableList;
-  private TableView<VentaDetalle> table;
+  private VentaController controller;
   private ProductoDao dao;
 
-  public VentaDetalleController() {
+  public VentaDetalleDialogController() {
     dao = new ProductoDaoImpl();
   }
 
@@ -43,22 +43,26 @@ public class VentaDetalleController implements Initializable {
         .disableProperty()
         .bind(
             Bindings.isEmpty(tfCodigo.textProperty())
-                .and(Bindings.isEmpty(tfDescripcion.textProperty()))
-                .and(Bindings.isEmpty(tfUnidadMedida.textProperty()))
-                .and(Bindings.isEmpty(tfCantidad.textProperty()))
-                .and(Bindings.isEmpty(tfPrecioUnitario.textProperty())));
+                .or(Bindings.isEmpty(tfDescripcion.textProperty()))
+                .or(Bindings.isEmpty(tfUnidadMedida.textProperty()))
+                .or(Bindings.isEmpty(tfPrecioUnitario.textProperty()))
+                .or(Bindings.isEmpty(tfCantidad.textProperty())));
   }
 
   @FXML
   private void onActionBtnBuscarProducto(ActionEvent event) {
-    String codigo = tfCodigo.getText().trim();
+    try {
+      String codigo = tfCodigo.getText().trim();
 
-    if (codigo.equals("")) return;
+      if (codigo.equals("")) return;
 
-    producto = dao.read(codigo);
-    tfDescripcion.setText(producto.getDescripcion());
-    tfUnidadMedida.setText(UnidadMedida.values()[producto.getUnidadMedida()].getDescripcion());
-    tfPrecioUnitario.setText(String.valueOf(producto.getPrecioUnitario()));
+      producto = dao.read(codigo);
+      tfDescripcion.setText(producto.getDescripcion());
+      tfUnidadMedida.setText(UnidadMedida.values()[producto.getUnidadMedida()].getDescripcion());
+      tfPrecioUnitario.setText(String.valueOf(producto.getPrecioUnitario()));
+    } catch (SQLException ex) {
+      Logger.getLogger(VentaDetalleDialogController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @FXML
@@ -66,29 +70,20 @@ public class VentaDetalleController implements Initializable {
     double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
     double cantidad = Double.parseDouble(tfCantidad.getText().trim());
     double subtotal = precioUnitario * cantidad;
-
     if (detalle == null) {
-      detalle = new VentaDetalle();
-      detalle.setPrecioUnitario(precioUnitario);
-      detalle.setCantidad(cantidad);
-      detalle.setSubtotal(subtotal);
-      detalle.setEstado(Estado.ACTIVO.getCodigo());
-      detalle.setProducto(producto);
+      detalle =
+          new VentaDetalle(precioUnitario, cantidad, subtotal, Estado.ACTIVO.getCodigo(), producto);
 
-      observableList.add(detalle);
+      controller.add(detalle);
     } else {
       detalle.setCantidad(cantidad);
       detalle.setSubtotal(subtotal);
 
-      table.refresh();
+      controller.refresh();
     }
 
     Stage stage = (Stage) btnGuardar.getScene().getWindow();
     stage.close();
-  }
-
-  public void setObservableList(ObservableList<VentaDetalle> observableList) {
-    this.observableList = observableList;
   }
 
   public void setDetalle(VentaDetalle detalle) {
@@ -105,7 +100,7 @@ public class VentaDetalleController implements Initializable {
     tfCantidad.setText(String.valueOf(detalle.getCantidad()));
   }
 
-  public void setTable(TableView<VentaDetalle> table) {
-    this.table = table;
+  public void setController(VentaController controller) {
+    this.controller = controller;
   }
 }

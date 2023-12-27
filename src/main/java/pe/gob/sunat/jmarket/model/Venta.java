@@ -1,77 +1,75 @@
 package pe.gob.sunat.jmarket.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class Venta {
-  private Long id;
-  private LocalDate fechaEmision;
-  private BigDecimal total;
-  private int estado;
+  private SimpleObjectProperty<Long> id;
+  private SimpleObjectProperty<LocalDate> fechaEmision;
+  private SimpleObjectProperty<Double> total;
+  private SimpleObjectProperty<Integer> estado;
   private Persona persona;
   private List<VentaDetalle> detalles;
-
-  public Venta() {}
 
   public Venta(
       Long id,
       LocalDate fechaEmision,
-      BigDecimal total,
+      double total,
       int estado,
       Persona persona,
       List<VentaDetalle> detalles) {
-    this.id = id;
-    this.fechaEmision = fechaEmision;
-    this.total = total;
-    this.estado = estado;
+    this.id = new SimpleObjectProperty<>(id);
+    this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
+    this.total = new SimpleObjectProperty<>(total);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
     this.detalles = detalles;
   }
 
   public Venta(
       LocalDate fechaEmision,
-      BigDecimal total,
+      double total,
       int estado,
       Persona persona,
       List<VentaDetalle> detalles) {
-    this.fechaEmision = fechaEmision;
-    this.total = total;
-    this.estado = estado;
+    this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
+    this.total = new SimpleObjectProperty<>(total);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
     this.detalles = detalles;
   }
 
   public Long getId() {
-    return id;
+    return id.get();
   }
 
   public void setId(Long id) {
-    this.id = id;
+    this.id.set(id);
   }
 
   public LocalDate getFechaEmision() {
-    return fechaEmision;
+    return fechaEmision.get();
   }
 
   public void setFechaEmision(LocalDate fechaEmision) {
-    this.fechaEmision = fechaEmision;
+    this.fechaEmision.set(fechaEmision);
   }
 
-  public BigDecimal getTotal() {
-    return total;
+  public double getTotal() {
+    return total.get();
   }
 
-  public void setTotal(BigDecimal total) {
-    this.total = total;
+  public void setTotal(double total) {
+    this.total.set(total);
   }
 
   public int getEstado() {
-    return estado;
+    return estado.get();
   }
 
   public void setEstado(int estado) {
-    this.estado = estado;
+    this.estado.set(estado);
   }
 
   public Persona getPersona() {
@@ -88,6 +86,22 @@ public class Venta {
 
   public void setDetalles(List<VentaDetalle> detalles) {
     this.detalles = detalles;
+  }
+
+  public SimpleObjectProperty<Long> getIdProperty() {
+    return id;
+  }
+
+  public SimpleObjectProperty<LocalDate> getFechaEmisionProperty() {
+    return fechaEmision;
+  }
+
+  public SimpleObjectProperty<Double> getTotalProperty() {
+    return total;
+  }
+
+  public SimpleObjectProperty<Integer> getEstadoProperty() {
+    return estado;
   }
 
   @Override

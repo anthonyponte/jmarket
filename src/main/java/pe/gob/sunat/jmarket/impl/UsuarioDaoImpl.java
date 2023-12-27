@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pe.gob.sunat.jmarket.dao.UsuarioDao;
 import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.Usuario;
@@ -20,7 +18,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
   }
 
   @Override
-  public Long create(Usuario o) {
+  public Long create(Usuario o) throws SQLException {
     Long id = 0L;
 
     database.connect();
@@ -45,9 +43,6 @@ public class UsuarioDaoImpl implements UsuarioDao {
           id = rs.getLong(1);
         }
       }
-
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -56,7 +51,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
   }
 
   @Override
-  public Usuario read(Long id) {
+  public Usuario read(Long id) throws SQLException {
     Usuario usuario = null;
 
     database.connect();
@@ -75,28 +70,24 @@ public class UsuarioDaoImpl implements UsuarioDao {
       ps.setLong(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          usuario = new Usuario();
-          usuario.setId(rs.getLong(1));
-          usuario.setTipoUsuario(rs.getInt(2));
-          usuario.setNombreUsuario(rs.getString(3));
-          usuario.setContrasena(rs.getString(4));
-          usuario.setEstado(rs.getInt(5));
-
-          Persona persona = new Persona();
-          persona.setId(rs.getLong(6));
-          persona.setTipoDocumento(rs.getInt(7));
-          persona.setNumeroDocumento(rs.getString(8));
-          persona.setPrimerNombre(rs.getString(9));
-          persona.setSegundoNombre(rs.getString(10));
-          persona.setApellidoPaterno(rs.getString(11));
-          persona.setApellidoMaterno(rs.getString(12));
-          persona.setEstado(rs.getInt(13));
-
-          usuario.setPersona(persona);
+          usuario =
+              new Usuario(
+                  rs.getLong(1),
+                  rs.getInt(2),
+                  rs.getString(3),
+                  rs.getString(4),
+                  rs.getInt(5),
+                  new Persona(
+                      rs.getLong(6),
+                      rs.getInt(7),
+                      rs.getString(8),
+                      rs.getString(9),
+                      rs.getString(10),
+                      rs.getString(11),
+                      rs.getString(12),
+                      rs.getInt(13)));
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -105,7 +96,7 @@ public class UsuarioDaoImpl implements UsuarioDao {
   }
 
   @Override
-  public List<Usuario> read() {
+  public List<Usuario> read() throws SQLException {
     List<Usuario> list = new ArrayList<>();
 
     database.connect();
@@ -123,30 +114,26 @@ public class UsuarioDaoImpl implements UsuarioDao {
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          Usuario usuario = new Usuario();
-          usuario.setId(rs.getLong(1));
-          usuario.setTipoUsuario(rs.getInt(2));
-          usuario.setNombreUsuario(rs.getString(3));
-          usuario.setContrasena(rs.getString(4));
-          usuario.setEstado(rs.getInt(5));
-
-          Persona persona = new Persona();
-          persona.setId(rs.getLong(6));
-          persona.setTipoDocumento(rs.getInt(7));
-          persona.setNumeroDocumento(rs.getString(8));
-          persona.setPrimerNombre(rs.getString(9));
-          persona.setSegundoNombre(rs.getString(10));
-          persona.setApellidoPaterno(rs.getString(11));
-          persona.setApellidoMaterno(rs.getString(12));
-          persona.setEstado(rs.getInt(13));
-
-          usuario.setPersona(persona);
+          Usuario usuario =
+              new Usuario(
+                  rs.getLong(1),
+                  rs.getInt(2),
+                  rs.getString(3),
+                  rs.getString(4),
+                  rs.getInt(5),
+                  new Persona(
+                      rs.getLong(6),
+                      rs.getInt(7),
+                      rs.getString(8),
+                      rs.getString(9),
+                      rs.getString(10),
+                      rs.getString(11),
+                      rs.getString(12),
+                      rs.getInt(13)));
 
           list.add(usuario);
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -155,28 +142,27 @@ public class UsuarioDaoImpl implements UsuarioDao {
   }
 
   @Override
-  public void update(Usuario o) {
+  public void update(Usuario o) throws SQLException {
     database.connect();
 
     String query =
-        "UPDATE USUARIO SET TIPO_USUARIO = ?, NOMBRE_USUARIO = ?, CONTRASENA = ? WHERE ID = ?";
+        "UPDATE USUARIO SET TIPO_USUARIO = ?, NOMBRE_USUARIO = ?, CONTRASENA = ?, ESTADO = ? WHERE ID = ?";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setInt(1, o.getTipoUsuario());
       ps.setString(2, o.getNombreUsuario());
       ps.setString(3, o.getContrasena());
-      ps.setLong(4, o.getId());
+      ps.setInt(4, o.getEstado());
+      ps.setLong(5, o.getId());
 
       ps.executeUpdate();
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
   }
 
   @Override
-  public void delete(Long id) {
+  public void delete(Long id) throws SQLException {
     database.connect();
 
     String query = "DELETE FROM USUARIO WHERE ID = ?";
@@ -184,20 +170,19 @@ public class UsuarioDaoImpl implements UsuarioDao {
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setLong(1, id);
       ps.executeUpdate();
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
   }
 
   @Override
-  public Long validate(String nombreUsuario, String contrasena) {
+  public Long validate(String nombreUsuario, String contrasena) throws SQLException {
     Long id = 0L;
 
     database.connect();
 
-    String query = "SELECT ID FROM USUARIO WHERE NOMBRE_USUARIO = ? AND CONTRASENA = ?";
+    String query =
+        "SELECT ID FROM USUARIO WHERE NOMBRE_USUARIO = ? AND CONTRASENA = ? AND ESTADO = 1";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setString(1, nombreUsuario);
@@ -208,8 +193,6 @@ public class UsuarioDaoImpl implements UsuarioDao {
           id = rs.getLong(1);
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(UsuarioDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();

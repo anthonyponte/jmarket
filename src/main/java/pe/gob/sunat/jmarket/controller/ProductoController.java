@@ -1,12 +1,12 @@
 package pe.gob.sunat.jmarket.controller;
 
-import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,11 +23,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import pe.gob.sunat.jmarket.dao.ProductoDao;
 import pe.gob.sunat.jmarket.impl.ProductoDaoImpl;
-import pe.gob.sunat.jmarket.model.num.Estado;
+import pe.gob.sunat.jmarket.model.enums.Estado;
 import pe.gob.sunat.jmarket.model.Producto;
-import pe.gob.sunat.jmarket.model.num.UnidadMedida;
+import pe.gob.sunat.jmarket.model.enums.UnidadMedida;
 
 public class ProductoController implements Initializable {
+  @FXML private ComboBox<Estado> cbEstado;
   @FXML private TextField tfId;
   @FXML private TextField tfCodigo;
   @FXML private TextField tfDescripcion;
@@ -37,7 +38,7 @@ public class ProductoController implements Initializable {
 
   @FXML private TextField tfFiltro;
   @FXML private TableView<Producto> table;
-  @FXML private TableColumn<Producto, String> tcId;
+  @FXML private TableColumn<Producto, Long> tcId;
   @FXML private TableColumn<Producto, String> tcCodigo;
   @FXML private TableColumn<Producto, String> tcDescripcion;
   @FXML private TableColumn<Producto, String> tcUnidadMedida;
@@ -55,6 +56,7 @@ public class ProductoController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    cbEstado.getItems().addAll(Estado.values());
     cbUnidadMedida.getItems().addAll(UnidadMedida.values());
 
     btnGuardar
@@ -62,6 +64,7 @@ public class ProductoController implements Initializable {
         .bind(
             Bindings.isEmpty(tfCodigo.textProperty())
                 .or(Bindings.isEmpty(tfDescripcion.textProperty()))
+                .or(Bindings.isNull(cbUnidadMedida.valueProperty()))
                 .or(Bindings.isEmpty(tfPrecioUnitario.textProperty())));
 
     initTable();
@@ -70,37 +73,46 @@ public class ProductoController implements Initializable {
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
     String id = tfId.getText().trim();
-    String codigo = tfCodigo.getText().trim();
-    String descripcion = tfDescripcion.getText().trim();
-    int unidadMedida = cbUnidadMedida.getValue().getId();
-    double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
 
     if (id.equals("")) {
-      producto = new Producto();
-      producto.setCodigo(codigo);
-      producto.setDescripcion(descripcion);
-      producto.setUnidadMedida(unidadMedida);
-      producto.setPrecioUnitario(precioUnitario);
-      producto.setEstado(Estado.ACTIVO.getCodigo());
+      try {
+        String codigo = tfCodigo.getText().trim();
+        String descripcion = tfDescripcion.getText().trim();
+        int unidadMedida = cbUnidadMedida.getValue().getId();
+        double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
 
-      Long idProducto = dao.create(producto);
+        producto =
+            new Producto(
+                codigo, descripcion, unidadMedida, precioUnitario, Estado.ACTIVO.getCodigo());
 
-      if (idProducto > 0) {
-        producto.setId(idProducto);
+        Long idProducto = dao.create(producto);
 
-        observableList.add(producto);
+        if (idProducto > 0) {
+          producto.setId(idProducto);
 
-        clearUI();
+          observableList.add(producto);
+
+          clearUI();
+        }
+      } catch (SQLException ex) {
+        Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
       }
     } else {
-      producto.setUnidadMedida(unidadMedida);
-      producto.setPrecioUnitario(precioUnitario);
-      producto.setEstado(Estado.ACTIVO.getCodigo());
-      dao.update(producto);
+      try {
 
-      table.refresh();
+        int estado = cbEstado.getValue().getCodigo();
+        double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
 
-      clearUI();
+        producto.setPrecioUnitario(precioUnitario);
+        producto.setEstado(estado);
+        dao.update(producto);
+
+        table.refresh();
+
+        clearUI();
+      } catch (SQLException ex) {
+        Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -112,12 +124,16 @@ public class ProductoController implements Initializable {
   @FXML
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
-      Producto producto = (Producto) table.getSelectionModel().getSelectedItem();
+      try {
+        Producto producto = (Producto) table.getSelectionModel().getSelectedItem();
 
-      if (producto == null) return;
+        if (producto == null) return;
 
-      dao.delete(producto.getId());
-      observableList.remove(producto);
+        dao.delete(producto.getId());
+        observableList.remove(producto);
+      } catch (SQLException ex) {
+        Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -128,8 +144,12 @@ public class ProductoController implements Initializable {
 
       if (producto == null) return;
 
+      cbEstado.setDisable(false);
       tfCodigo.setDisable(true);
+      tfDescripcion.setDisable(true);
+      cbUnidadMedida.setDisable(true);
 
+      cbEstado.getSelectionModel().select(producto.getEstado());
       tfId.setText(producto.getId().toString());
       tfCodigo.setText(producto.getCodigo());
       tfDescripcion.setText(producto.getDescripcion());
@@ -139,61 +159,68 @@ public class ProductoController implements Initializable {
   }
 
   private void initTable() {
-    tcId.setCellValueFactory(c -> new SimpleObjectProperty(c.getValue().getId()));
-    tcCodigo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCodigo()));
-    tcDescripcion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescripcion()));
-    tcUnidadMedida.setCellValueFactory(
-        c ->
-            new SimpleStringProperty(
-                UnidadMedida.values()[c.getValue().getUnidadMedida()].getDescripcion()));
-    tcPrecioUnitario.setCellValueFactory(
-        c -> new SimpleObjectProperty<>(c.getValue().getPrecioUnitario()));
-    tcEstado.setCellValueFactory(
-        c -> new SimpleStringProperty(Estado.values()[c.getValue().getEstado()].getDescripcion()));
+    try {
+      tcId.setCellValueFactory(c -> c.getValue().getIdProperty());
+      tcCodigo.setCellValueFactory(c -> c.getValue().getCodigoProperty());
+      tcDescripcion.setCellValueFactory(c -> c.getValue().getDescripcionProperty());
+      tcUnidadMedida.setCellValueFactory(
+          c -> UnidadMedida.values()[c.getValue().getUnidadMedida()].getDescripcionProperty());
+      tcPrecioUnitario.setCellValueFactory(c -> c.getValue().getPrecioUnitarioProperty());
+      tcEstado.setCellValueFactory(
+          c -> Estado.values()[c.getValue().getEstado()].getDescripcionProperty());
 
-    FilteredList<Producto> filteredList = new FilteredList<>(observableList, p -> true);
-    table.setItems(filteredList);
+      FilteredList<Producto> filteredList = new FilteredList<>(observableList, p -> true);
+      table.setItems(filteredList);
 
-    tfFiltro
-        .textProperty()
-        .addListener(
-            (observable, oldValue, newValue) -> {
-              filteredList.setPredicate(
-                  producto -> {
-                    if (newValue == null || newValue.isEmpty()) {
-                      return true;
-                    }
+      tfFiltro
+          .textProperty()
+          .addListener(
+              (observable, oldValue, newValue) -> {
+                filteredList.setPredicate(
+                    producto -> {
+                      if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                      }
 
-                    String lowerCaseFilter = newValue.toLowerCase();
+                      String lowerCaseFilter = newValue.toLowerCase();
 
-                    if (producto.getCodigo().toLowerCase().contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (producto.getDescripcion().toLowerCase().contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (UnidadMedida.values()[producto.getUnidadMedida()]
-                        .getDescripcion()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    } else if (Estado.values()[producto.getEstado()]
-                        .getDescripcion()
-                        .toLowerCase()
-                        .contains(lowerCaseFilter)) {
-                      return true;
-                    }
-                    return false;
-                  });
-            });
+                      if (producto.getCodigo().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                      } else if (producto
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(lowerCaseFilter)) {
+                        return true;
+                      } else if (UnidadMedida.values()[producto.getUnidadMedida()]
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(lowerCaseFilter)) {
+                        return true;
+                      } else if (Estado.values()[producto.getEstado()]
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(lowerCaseFilter)) {
+                        return true;
+                      }
+                      return false;
+                    });
+              });
 
-    List<Producto> list = dao.read();
-    observableList.clear();
-    observableList.setAll(list);
+      List<Producto> list = dao.read();
+      observableList.clear();
+      observableList.setAll(list);
+    } catch (SQLException ex) {
+      Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   private void clearUI() {
     producto = null;
 
+    cbEstado.setDisable(true);
     tfCodigo.setDisable(false);
+    tfDescripcion.setDisable(false);
+    cbUnidadMedida.setDisable(false);
 
     tfId.clear();
     tfCodigo.clear();

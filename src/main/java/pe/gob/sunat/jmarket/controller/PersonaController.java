@@ -1,11 +1,12 @@
 package pe.gob.sunat.jmarket.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,10 +24,11 @@ import javafx.scene.input.MouseEvent;
 import pe.gob.sunat.jmarket.dao.PersonaDao;
 import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.model.Persona;
-import pe.gob.sunat.jmarket.model.num.Estado;
-import pe.gob.sunat.jmarket.model.num.TipoDocumento;
+import pe.gob.sunat.jmarket.model.enums.Estado;
+import pe.gob.sunat.jmarket.model.enums.TipoDocumento;
 
 public class PersonaController implements Initializable {
+  @FXML private ComboBox<Estado> cbEstado;
   @FXML private TextField tfId;
   @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
   @FXML private TextField tfNumeroDocumento;
@@ -58,12 +60,15 @@ public class PersonaController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    cbEstado.getItems().addAll(Estado.values());
     cbTipoDocumento.getItems().addAll(TipoDocumento.values());
 
     btnGuardar
         .disableProperty()
         .bind(
-            Bindings.isEmpty(tfNumeroDocumento.textProperty())
+            Bindings.isNull(cbTipoDocumento.valueProperty())
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
+                .or(Bindings.isNull(cbTipoDocumento.valueProperty()))
                 .or(Bindings.isEmpty(tfPrimerNombre.textProperty()))
                 .or(Bindings.isEmpty(tfSegundoNombre.textProperty()))
                 .or(Bindings.isEmpty(tfSegundoNombre.textProperty()))
@@ -76,42 +81,49 @@ public class PersonaController implements Initializable {
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
     String id = tfId.getText().trim();
-    int tipoDocumento = cbTipoDocumento.getValue().getCodigo();
-    String numeroDocumento = tfNumeroDocumento.getText().trim();
-    String primerNombre = tfPrimerNombre.getText().trim();
-    String segundoNombre = tfSegundoNombre.getText().trim();
-    String apellidoPaterno = tfApellidoPaterno.getText().trim();
-    String apellidoMaterno = tfApellidoMaterno.getText().trim();
-
     if (id.equals("")) {
-      persona = new Persona();
-      persona.setTipoDocumento(tipoDocumento);
-      persona.setNumeroDocumento(numeroDocumento);
-      persona.setPrimerNombre(primerNombre);
-      persona.setSegundoNombre(segundoNombre);
-      persona.setApellidoPaterno(apellidoPaterno);
-      persona.setApellidoMaterno(apellidoMaterno);
-      persona.setEstado(Estado.ACTIVO.getCodigo());
+      try {
+        int tipoDocumento = cbTipoDocumento.getValue().getCodigo();
+        String numeroDocumento = tfNumeroDocumento.getText().trim();
+        String primerNombre = tfPrimerNombre.getText().trim();
+        String segundoNombre = tfSegundoNombre.getText().trim();
+        String apellidoPaterno = tfApellidoPaterno.getText().trim();
+        String apellidoMaterno = tfApellidoMaterno.getText().trim();
 
-      Long idPersona = dao.create(persona);
+        persona =
+            new Persona(
+                tipoDocumento,
+                numeroDocumento,
+                primerNombre,
+                segundoNombre,
+                apellidoPaterno,
+                apellidoMaterno,
+                Estado.ACTIVO.getCodigo());
 
-      if (idPersona > 0) {
-        persona.setId(idPersona);
-        observableList.add(persona);
+        Long idPersona = dao.create(persona);
 
-        clearUI();
+        if (idPersona > 0) {
+          persona.setId(idPersona);
+          observableList.add(persona);
+
+          clearUI();
+        }
+      } catch (SQLException ex) {
+        Logger.getLogger(PersonaController.class.getName()).log(Level.SEVERE, null, ex);
       }
     } else {
-      persona.setPrimerNombre(primerNombre);
-      persona.setSegundoNombre(segundoNombre);
-      persona.setApellidoPaterno(apellidoPaterno);
-      persona.setApellidoMaterno(apellidoMaterno);
+      try {
+        int estado = cbEstado.getValue().getCodigo();
+        persona.setEstado(estado);
 
-      dao.update(persona);
+        dao.update(persona);
 
-      table.refresh();
+        table.refresh();
 
-      clearUI();
+        clearUI();
+      } catch (SQLException ex) {
+        Logger.getLogger(PersonaController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -123,12 +135,16 @@ public class PersonaController implements Initializable {
   @FXML
   private void onKeyPressedTable(KeyEvent event) {
     if (event.getCode().equals(KeyCode.DELETE)) {
-      Persona persona = (Persona) table.getSelectionModel().getSelectedItem();
-      
-      if (persona == null) return;
-      
-      dao.delete(persona.getId());
-      observableList.remove(persona);
+      try {
+        Persona persona = (Persona) table.getSelectionModel().getSelectedItem();
+
+        if (persona == null) return;
+
+        dao.delete(persona.getId());
+        observableList.remove(persona);
+      } catch (SQLException ex) {
+        Logger.getLogger(PersonaController.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }
 
@@ -136,12 +152,18 @@ public class PersonaController implements Initializable {
   private void onMouseClickedTable(MouseEvent event) {
     if (event.getClickCount() == 2) {
       persona = (Persona) table.getSelectionModel().getSelectedItem();
-      
+
       if (persona == null) return;
 
+      cbEstado.setDisable(false);
       cbTipoDocumento.setDisable(true);
       tfNumeroDocumento.setDisable(true);
+      tfPrimerNombre.setDisable(true);
+      tfSegundoNombre.setDisable(true);
+      tfApellidoPaterno.setDisable(true);
+      tfApellidoMaterno.setDisable(true);
 
+      cbEstado.getSelectionModel().select(persona.getEstado());
       tfId.setText(persona.getId().toString());
       cbTipoDocumento.getSelectionModel().select(persona.getTipoDocumento());
       tfNumeroDocumento.setText(persona.getNumeroDocumento());
@@ -153,72 +175,75 @@ public class PersonaController implements Initializable {
   }
 
   private void initTable() {
-    tcId.setCellValueFactory(c -> new SimpleObjectProperty(c.getValue().getId()));
-    tcTipoDocumento.setCellValueFactory(
-        c ->
-            new SimpleStringProperty(
-                TipoDocumento.values()[c.getValue().getTipoDocumento()].getDescripcion()));
-    tcNumeroDocumento.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getNumeroDocumento()));
-    tcPrimerNombre.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getPrimerNombre()));
-    tcSegundoNombre.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getSegundoNombre()));
-    tcApellidoPaterno.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getApellidoPaterno()));
-    tcApellidoMaterno.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getApellidoMaterno()));
-    tcEstado.setCellValueFactory(
-        c -> new SimpleStringProperty(Estado.values()[c.getValue().getEstado()].getDescripcion()));
+    try {
+      tcId.setCellValueFactory(c -> c.getValue().getIdProperty());
+      tcTipoDocumento.setCellValueFactory(
+          c -> TipoDocumento.values()[c.getValue().getTipoDocumento()].getDescripcionProperty());
+      tcNumeroDocumento.setCellValueFactory(c -> c.getValue().getNumeroDocumentoProperty());
+      tcPrimerNombre.setCellValueFactory(c -> c.getValue().getPrimerNombreProperty());
+      tcSegundoNombre.setCellValueFactory(c -> c.getValue().getSegundoNombreProperty());
+      tcApellidoPaterno.setCellValueFactory(c -> c.getValue().getApellidoPaternoProperty());
+      tcApellidoMaterno.setCellValueFactory(c -> c.getValue().getApellidoMaternoProperty());
+      tcEstado.setCellValueFactory(
+          c -> Estado.values()[c.getValue().getEstado()].getDescripcionProperty());
 
-    FilteredList<Persona> filteredList = new FilteredList<>(observableList, p -> true);
-    table.setItems(filteredList);
+      FilteredList<Persona> filteredList = new FilteredList<>(observableList, p -> true);
+      table.setItems(filteredList);
 
-    tfFiltro
-        .textProperty()
-        .addListener(
-            (observable, oldValue, newValue) -> {
-              filteredList.setPredicate(
-                  p -> {
-                    if (newValue == null || newValue.isEmpty()) {
-                      return true;
-                    }
+      tfFiltro
+          .textProperty()
+          .addListener(
+              (observable, oldValue, newValue) -> {
+                filteredList.setPredicate(
+                    p -> {
+                      if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                      }
 
-                    String value = newValue.toLowerCase();
+                      String value = newValue.toLowerCase();
 
-                    if (p.getNumeroDocumento().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (p.getPrimerNombre().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (p.getSegundoNombre().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (p.getApellidoPaterno().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (p.getApellidoMaterno().toLowerCase().contains(value)) {
-                      return true;
-                    } else if (Estado.values()[p.getEstado()]
-                        .getDescripcion()
-                        .toLowerCase()
-                        .contains(value)) {
-                      return true;
-                    }
+                      if (p.getNumeroDocumento().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (p.getPrimerNombre().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (p.getSegundoNombre().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (p.getApellidoPaterno().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (p.getApellidoMaterno().toLowerCase().contains(value)) {
+                        return true;
+                      } else if (Estado.values()[p.getEstado()]
+                          .getDescripcion()
+                          .toLowerCase()
+                          .contains(value)) {
+                        return true;
+                      }
 
-                    return false;
-                  });
-            });
+                      return false;
+                    });
+              });
 
-    List<Persona> list = dao.read();
-    observableList.clear();
-    observableList.setAll(list);
+      List<Persona> list = dao.read();
+      observableList.clear();
+      observableList.setAll(list);
+    } catch (SQLException ex) {
+      Logger.getLogger(PersonaController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   private void clearUI() {
     persona = null;
 
+    cbEstado.setDisable(true);
     cbTipoDocumento.setDisable(false);
     tfNumeroDocumento.setDisable(false);
+    tfPrimerNombre.setDisable(false);
+    tfSegundoNombre.setDisable(false);
+    tfApellidoPaterno.setDisable(false);
+    tfApellidoMaterno.setDisable(false);
 
     tfId.clear();
+    cbEstado.getSelectionModel().clearSelection();
     cbTipoDocumento.getSelectionModel().clearSelection();
     tfNumeroDocumento.clear();
     tfPrimerNombre.clear();

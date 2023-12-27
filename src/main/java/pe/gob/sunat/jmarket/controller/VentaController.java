@@ -1,18 +1,17 @@
 package pe.gob.sunat.jmarket.controller;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,10 +37,10 @@ import pe.gob.sunat.jmarket.impl.PersonaDaoImpl;
 import pe.gob.sunat.jmarket.impl.VentaDaoImpl;
 import pe.gob.sunat.jmarket.model.Persona;
 import pe.gob.sunat.jmarket.model.Venta;
-import pe.gob.sunat.jmarket.model.num.UnidadMedida;
+import pe.gob.sunat.jmarket.model.enums.UnidadMedida;
 import pe.gob.sunat.jmarket.model.VentaDetalle;
-import pe.gob.sunat.jmarket.model.num.Estado;
-import pe.gob.sunat.jmarket.model.num.TipoDocumento;
+import pe.gob.sunat.jmarket.model.enums.Estado;
+import pe.gob.sunat.jmarket.model.enums.TipoDocumento;
 
 public class VentaController implements Initializable {
   @FXML private TextField tfId;
@@ -67,7 +66,13 @@ public class VentaController implements Initializable {
   private PersonaDao personaDao;
 
   public VentaController() {
-    observableList = FXCollections.observableArrayList();
+    observableList =
+        FXCollections.observableArrayList(
+            (VentaDetalle p) ->
+                new Observable[] {
+                  p.getCantidadProperty(), p.getPrecioUnitarioProperty(), p.getSubtotalProperty()
+                });
+
     ventaDao = new VentaDaoImpl();
     personaDao = new PersonaDaoImpl();
   }
@@ -89,10 +94,14 @@ public class VentaController implements Initializable {
 
   @FXML
   private void onActionBtnBuscarPersona(ActionEvent event) {
-    String numeroDocumento = tfNumeroDocumento.getText().trim();
-    if (numeroDocumento.equals("")) return;
-    persona = personaDao.read(numeroDocumento);
-    tfNombreCompleto.setText(persona.getNombreCompleto());
+    try {
+      String numeroDocumento = tfNumeroDocumento.getText().trim();
+      if (numeroDocumento.equals("")) return;
+      persona = personaDao.read(numeroDocumento);
+      tfNombreCompleto.setText(persona.getNombreCompleto());
+    } catch (SQLException ex) {
+      Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @FXML
@@ -100,14 +109,15 @@ public class VentaController implements Initializable {
     try {
       FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
       Parent parent = fxmlLoader.load();
-      VentaDetalleController controller = fxmlLoader.<VentaDetalleController>getController();
-      controller.setObservableList(observableList);
+      VentaDetalleDialogController controller =
+          fxmlLoader.<VentaDetalleDialogController>getController();
+      controller.setController(this);
 
       Scene scene = new Scene(parent);
       Stage stage = new Stage();
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(scene);
-      stage.setTitle("Producto");
+      stage.setTitle("Venta Detalle");
       stage.setResizable(false);
       stage.showAndWait();
     } catch (IOException ex) {
@@ -119,19 +129,18 @@ public class VentaController implements Initializable {
   private void onActionBtnGuardar(ActionEvent event) {
     String id = tfId.getText().trim();
     LocalDate fechaEmision = dpFechaEmision.getValue();
-    BigDecimal total = new BigDecimal(tfTotal.getText().trim());
+    double total = Double.parseDouble(tfTotal.getText().trim());
 
     if (id.equals("")) {
-      venta = new Venta();
-      venta.setFechaEmision(fechaEmision);
-      venta.setTotal(total);
-      venta.setEstado(Estado.ACTIVO.getCodigo());
-      venta.setPersona(persona);
-      venta.setDetalles(observableList);
+      try {
+        venta = new Venta(fechaEmision, total, Estado.ACTIVO.getCodigo(), persona, observableList);
 
-      Long idVenta = ventaDao.create(venta);
-      if (idVenta > 0) {
-        clearUI();
+        Long idVenta = ventaDao.create(venta);
+        if (idVenta > 0) {
+          clearUI();
+        }
+      } catch (SQLException ex) {
+        Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
   }
@@ -162,15 +171,16 @@ public class VentaController implements Initializable {
 
         FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
         Parent parent = fxmlLoader.load();
-        VentaDetalleController controller = fxmlLoader.<VentaDetalleController>getController();
+        VentaDetalleDialogController controller =
+            fxmlLoader.<VentaDetalleDialogController>getController();
+        controller.setController(this);
         controller.setDetalle(detalle);
-        controller.setTable(table);
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
-        stage.setTitle("Producto");
+        stage.setTitle("Venta Detalle");
         stage.setResizable(false);
         stage.showAndWait();
       } catch (IOException ex) {
@@ -180,22 +190,18 @@ public class VentaController implements Initializable {
   }
 
   private void initTable() {
-    tcCodigo.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getProducto().getCodigo()));
-    tcDescripcion.setCellValueFactory(
-        c -> new SimpleStringProperty(c.getValue().getProducto().getDescripcion()));
+    tcCodigo.setCellValueFactory(c -> c.getValue().getProducto().getCodigoProperty());
+    tcDescripcion.setCellValueFactory(c -> c.getValue().getProducto().getDescripcionProperty());
     tcUnidadMedida.setCellValueFactory(
         c ->
-            new SimpleStringProperty(
-                UnidadMedida.values()[c.getValue().getProducto().getUnidadMedida()]
-                    .getDescripcion()));
-    tcCantidad.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getCantidad()));
-    tcPrecioUnitario.setCellValueFactory(
-        c -> new SimpleObjectProperty<>(c.getValue().getPrecioUnitario()));
-    tcSubtotal.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getSubtotal()));
+            UnidadMedida.values()[c.getValue().getProducto().getUnidadMedida()]
+                .getDescripcionProperty());
+    tcCantidad.setCellValueFactory(c -> c.getValue().getCantidadProperty());
+    tcPrecioUnitario.setCellValueFactory(c -> c.getValue().getPrecioUnitarioProperty());
+    tcSubtotal.setCellValueFactory(c -> c.getValue().getSubtotalProperty());
 
     observableList.addListener(
-        (ListChangeListener.Change<? extends VentaDetalle> change) -> {
+        (Change<? extends VentaDetalle> change) -> {
           double total =
               observableList.stream().collect(Collectors.summingDouble(VentaDetalle::getSubtotal));
           tfTotal.setText(String.valueOf(total));
@@ -215,5 +221,13 @@ public class VentaController implements Initializable {
     tfNombreCompleto.clear();
 
     observableList.clear();
+  }
+
+  public void add(VentaDetalle ventaDetalle) {
+    observableList.add(ventaDetalle);
+  }
+
+  public void refresh() {
+    table.refresh();
   }
 }

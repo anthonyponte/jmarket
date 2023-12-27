@@ -2,6 +2,7 @@ package pe.gob.sunat.jmarket.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,33 +44,37 @@ public class LoginController implements Initializable {
 
   @FXML
   private void onActionBtnEntrar(ActionEvent event) {
-    String nombreUsuario = tfNombreUsuario.getText().toUpperCase();
-    String contrasena = pfContrasena.getText();
-
-    Long id = dao.validate(nombreUsuario, contrasena);
-
-    if (id > 0) {
-      try {
-        Stage old = (Stage) btnEntrar.getScene().getWindow();
-        old.close();
-
-        FXMLLoader fxmlLoader = App.loadFXML("MainView");
-        Parent parent = fxmlLoader.load();
-
-        Usuario usuario = dao.read(id);
-        MainController controller = fxmlLoader.<MainController>getController();
-        controller.setUsuario(usuario);
-
-        Scene scene = new Scene(parent);
-
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("JMarket");
-        stage.setResizable(true);
-        stage.show();
-      } catch (IOException ex) {
-        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+    try {
+      String nombreUsuario = tfNombreUsuario.getText().toUpperCase();
+      String contrasena = pfContrasena.getText();
+      
+      Long id = dao.validate(nombreUsuario, contrasena);
+      
+      if (id > 0) {
+        try {
+          Stage old = (Stage) btnEntrar.getScene().getWindow();
+          old.close();
+          
+          FXMLLoader fxmlLoader = App.loadFXML("MainView");
+          Parent parent = fxmlLoader.load();
+          
+          Usuario usuario = dao.read(id);
+          MainController controller = fxmlLoader.<MainController>getController();
+          controller.setUsuario(usuario);
+          
+          Scene scene = new Scene(parent);
+          
+          Stage stage = new Stage();
+          stage.setScene(scene);
+          stage.setTitle("JMarket");
+          stage.setResizable(true);
+          stage.show();
+        } catch (IOException | SQLException ex) {
+          Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
       }
+    } catch (SQLException ex) {
+      Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 }

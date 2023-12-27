@@ -1,18 +1,16 @@
 package pe.gob.sunat.jmarket.model;
 
-import java.math.BigDecimal;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class VentaDetalle {
-  private Long id;
-  private int numeroFila;
-  private double precioUnitario;
-  private double cantidad;
-  private double subtotal;
-  private int estado;
+  private SimpleObjectProperty<Long> id;
+  private SimpleObjectProperty<Integer> numeroFila;
+  private SimpleObjectProperty<Double> precioUnitario;
+  private SimpleObjectProperty<Double> cantidad;
+  private SimpleObjectProperty<Double> subtotal;
+  private SimpleObjectProperty<Integer> estado;
   private Producto producto;
   private Venta venta;
-
-  public VentaDetalle() {}
 
   public VentaDetalle(
       Long id,
@@ -23,12 +21,12 @@ public class VentaDetalle {
       int estado,
       Producto producto,
       Venta venta) {
-    this.id = id;
-    this.numeroFila = numeroFila;
-    this.precioUnitario = precioUnitario;
-    this.cantidad = cantidad;
-    this.subtotal = subtotal;
-    this.estado = estado;
+    this.id = new SimpleObjectProperty<>(id);
+    this.numeroFila = new SimpleObjectProperty<>(numeroFila);
+    this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
+    this.cantidad = new SimpleObjectProperty<>(cantidad);
+    this.subtotal = new SimpleObjectProperty<>(subtotal);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.producto = producto;
     this.venta = venta;
   }
@@ -41,61 +39,70 @@ public class VentaDetalle {
       int estado,
       Producto producto,
       Venta venta) {
-    this.numeroFila = numeroFila;
-    this.precioUnitario = precioUnitario;
-    this.cantidad = cantidad;
-    this.subtotal = subtotal;
-    this.estado = estado;
+    this.numeroFila = new SimpleObjectProperty<>(numeroFila);
+    this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
+    this.cantidad = new SimpleObjectProperty<>(cantidad);
+    this.subtotal = new SimpleObjectProperty<>(subtotal);
+    this.estado = new SimpleObjectProperty<>(estado);
     this.producto = producto;
     this.venta = venta;
   }
 
+  public VentaDetalle(
+      double precioUnitario, double cantidad, double subtotal, int estado, Producto producto) {
+    this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
+    this.cantidad = new SimpleObjectProperty<>(cantidad);
+    this.subtotal = new SimpleObjectProperty<>(subtotal);
+    this.estado = new SimpleObjectProperty<>(estado);
+    this.producto = producto;
+  }
+
   public Long getId() {
-    return id;
+    return id.get();
   }
 
   public void setId(Long id) {
-    this.id = id;
+    this.id.set(id);
   }
 
   public int getNumeroFila() {
-    return numeroFila;
+    return numeroFila.get();
   }
 
   public void setNumeroFila(int numeroFila) {
-    this.numeroFila = numeroFila;
+    this.numeroFila.set(numeroFila);
   }
 
   public double getPrecioUnitario() {
-    return precioUnitario;
+    return precioUnitario.get();
   }
 
   public void setPrecioUnitario(double precioUnitario) {
-    this.precioUnitario = precioUnitario;
+    this.precioUnitario.set(precioUnitario);
   }
 
   public double getCantidad() {
-    return cantidad;
+    return cantidad.get();
   }
 
   public void setCantidad(double cantidad) {
-    this.cantidad = cantidad;
+    this.cantidad.set(cantidad);
   }
 
   public double getSubtotal() {
-    return subtotal;
+    return subtotal.get();
   }
 
   public void setSubtotal(double subtotal) {
-    this.subtotal = subtotal;
+    this.subtotal.set(subtotal);
   }
 
   public int getEstado() {
-    return estado;
+    return estado.get();
   }
 
   public void setEstado(int estado) {
-    this.estado = estado;
+    this.estado.set(estado);
   }
 
   public Producto getProducto() {
@@ -112,6 +119,30 @@ public class VentaDetalle {
 
   public void setVenta(Venta venta) {
     this.venta = venta;
+  }
+
+  public SimpleObjectProperty<Long> getIdProperty() {
+    return id;
+  }
+
+  public SimpleObjectProperty<Integer> getNumeroFilaProperty() {
+    return numeroFila;
+  }
+
+  public SimpleObjectProperty<Double> getPrecioUnitarioProperty() {
+    return precioUnitario;
+  }
+
+  public SimpleObjectProperty<Double> getCantidadProperty() {
+    return cantidad;
+  }
+
+  public SimpleObjectProperty<Double> getSubtotalProperty() {
+    return subtotal;
+  }
+
+  public SimpleObjectProperty<Integer> getEstadoProperty() {
+    return estado;
   }
 
   @Override

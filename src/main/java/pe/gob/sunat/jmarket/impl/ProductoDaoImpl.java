@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pe.gob.sunat.jmarket.dao.ProductoDao;
 import pe.gob.sunat.jmarket.model.Producto;
 import pe.gob.sunat.jmarket.util.MyHsqldbConnection;
@@ -19,7 +17,7 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public Long create(Producto producto) {
+  public Long create(Producto producto) throws SQLException {
     Long id = 0L;
 
     database.connect();
@@ -42,9 +40,6 @@ public class ProductoDaoImpl implements ProductoDao {
           id = rs.getLong(1);
         }
       }
-
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -53,7 +48,7 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public Producto read(Long id) {
+  public Producto read(Long id) throws SQLException {
     Producto producto = null;
 
     database.connect();
@@ -68,17 +63,16 @@ public class ProductoDaoImpl implements ProductoDao {
       ps.setLong(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          producto = new Producto();
-          producto.setId(rs.getLong(1));
-          producto.setCodigo(rs.getString(2));
-          producto.setDescripcion(rs.getString(3));
-          producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getDouble(5));
-          producto.setEstado(rs.getInt(6));
+          producto =
+              new Producto(
+                  rs.getLong(1),
+                  rs.getString(2),
+                  rs.getString(3),
+                  rs.getInt(4),
+                  rs.getDouble(5),
+                  rs.getInt(6));
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -87,7 +81,7 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public List<Producto> read() {
+  public List<Producto> read() throws SQLException {
     List<Producto> list = new ArrayList<>();
 
     database.connect();
@@ -100,19 +94,18 @@ public class ProductoDaoImpl implements ProductoDao {
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          Producto producto = new Producto();
-          producto.setId(rs.getLong(1));
-          producto.setCodigo(rs.getString(2));
-          producto.setDescripcion(rs.getString(3));
-          producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getDouble(5));
-          producto.setEstado(rs.getInt(6));
+          Producto producto =
+              new Producto(
+                  rs.getLong(1),
+                  rs.getString(2),
+                  rs.getString(3),
+                  rs.getInt(4),
+                  rs.getDouble(5),
+                  rs.getInt(6));
 
           list.add(producto);
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
@@ -121,28 +114,24 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public void update(Producto producto) {
+  public void update(Producto producto) throws SQLException {
     database.connect();
 
-    String query =
-        "UPDATE PRODUCTO SET DESCRIPCION = ?, UNIDAD_MEDIDA = ?, PRECIO_UNITARIO = ? WHERE ID = ?";
+    String query = "UPDATE PRODUCTO SET PRECIO_UNITARIO = ?, ESTADO = ? WHERE ID = ?";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
-      ps.setString(1, producto.getDescripcion());
-      ps.setInt(2, producto.getUnidadMedida());
-      ps.setDouble(3, producto.getPrecioUnitario());
-      ps.setLong(4, producto.getId());
+      ps.setDouble(1, producto.getPrecioUnitario());
+      ps.setInt(2, producto.getEstado());
+      ps.setLong(3, producto.getId());
 
       ps.executeUpdate();
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
   }
 
   @Override
-  public void delete(Long id) {
+  public void delete(Long id) throws SQLException {
     database.connect();
 
     String query = "DELETE FROM PRODUCTO WHERE ID = ?";
@@ -150,15 +139,13 @@ public class ProductoDaoImpl implements ProductoDao {
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setLong(1, id);
       ps.executeUpdate();
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();
   }
 
   @Override
-  public Producto read(String codigo) {
+  public Producto read(String codigo) throws SQLException {
     Producto producto = null;
 
     database.connect();
@@ -166,24 +153,22 @@ public class ProductoDaoImpl implements ProductoDao {
     String query =
         "SELECT ID, CODIGO, DESCRIPCION, UNIDAD_MEDIDA, PRECIO_UNITARIO, ESTADO "
             + "FROM PRODUCTO "
-            + "WHERE CODIGO = ? "
-            + "ORDER BY ID DESC";
+            + "WHERE CODIGO = ? AND ESTADO =  1";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setString(1, codigo);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          producto = new Producto();
-          producto.setId(rs.getLong(1));
-          producto.setCodigo(rs.getString(2));
-          producto.setDescripcion(rs.getString(3));
-          producto.setUnidadMedida(rs.getInt(4));
-          producto.setPrecioUnitario(rs.getDouble(5));
-          producto.setEstado(rs.getInt(6));
+          producto =
+              new Producto(
+                  rs.getLong(1),
+                  rs.getString(2),
+                  rs.getString(3),
+                  rs.getInt(4),
+                  rs.getDouble(5),
+                  rs.getInt(6));
         }
       }
-    } catch (SQLException ex) {
-      Logger.getLogger(ProductoDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
     }
 
     database.disconnect();

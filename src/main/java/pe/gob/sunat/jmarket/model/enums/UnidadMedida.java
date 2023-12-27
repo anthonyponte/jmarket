@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package pe.gob.sunat.jmarket.model.enums;
 
-package pe.gob.sunat.jmarket.model.num;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
-/**
- * @author anthonyponte
- */
 public enum UnidadMedida {
   BALDE(0, "BJ", "BALDE"),
   BOLSA(1, "BG", "BOLSA"),
@@ -30,30 +25,42 @@ public enum UnidadMedida {
   UNIDAD_BIENES(18, "NIU", "UNIDAD (BIENES)"),
   UNIDAD_SERVICIOS(19, "ZZ", "UNIDAD (SERVICIOS)");
 
-  private final int id;
-  private final String codigo;
-  private final String descripcion;
+  private final SimpleObjectProperty<Integer> id;
+  private final SimpleStringProperty codigo;
+  private final SimpleStringProperty descripcion;
 
   private UnidadMedida(int id, String codigo, String descripcion) {
-    this.id = id;
-    this.codigo = codigo;
-    this.descripcion = descripcion;
+    this.id = new SimpleObjectProperty<>(id);
+    this.codigo = new SimpleStringProperty(codigo);
+    this.descripcion = new SimpleStringProperty(descripcion);
   }
 
   public int getId() {
-    return id;
+    return id.get();
   }
 
   public String getCodigo() {
-    return codigo;
+    return codigo.get();
   }
 
   public String getDescripcion() {
+    return descripcion.get();
+  }
+
+  public SimpleObjectProperty<Integer> getIdProperty() {
+    return id;
+  }
+
+  public SimpleStringProperty getCodigoProperty() {
+    return codigo;
+  }
+
+  public SimpleStringProperty getDescripcionProperty() {
     return descripcion;
   }
 
   @Override
   public String toString() {
-    return descripcion;
+    return descripcion.get();
   }
 }
