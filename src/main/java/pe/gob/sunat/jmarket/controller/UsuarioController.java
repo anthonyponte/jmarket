@@ -35,13 +35,13 @@ import pe.gob.sunat.jmarket.model.Usuario;
 public class UsuarioController implements Initializable {
   @FXML private ComboBox<Estado> cbEstado;
   @FXML private TextField tfId;
+  @FXML private Button btnBuscarPersona;
   @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
   @FXML private TextField tfNumeroDocumento;
   @FXML private TextField tfNombreCompleto;
   @FXML private ComboBox<TipoUsuario> cbTipoUsuario;
   @FXML private TextField tfNombreUsuario;
   @FXML private PasswordField pfContrasena;
-  @FXML private Button btnBuscarPersona;
   @FXML private Button btnGuardar;
 
   @FXML private TextField tfFiltro;
@@ -68,6 +68,12 @@ public class UsuarioController implements Initializable {
     cbEstado.getItems().addAll(Estado.values());
     cbTipoDocumento.getItems().addAll(TipoDocumento.values());
     cbTipoUsuario.getItems().addAll(TipoUsuario.values());
+
+    btnBuscarPersona
+        .disableProperty()
+        .bind(
+            Bindings.isNull(cbTipoDocumento.valueProperty())
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty())));
 
     btnGuardar
         .disableProperty()

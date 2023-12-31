@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,13 +44,16 @@ import pe.gob.sunat.jmarket.model.enums.Estado;
 import pe.gob.sunat.jmarket.model.enums.TipoDocumento;
 
 public class VentaController implements Initializable {
+  @FXML private ComboBox<Estado> cbEstado;
   @FXML private TextField tfId;
   @FXML private DatePicker dpFechaEmision;
+  @FXML private Button btnBuscarPersona;
   @FXML private ComboBox<TipoDocumento> cbTipoDocumento;
   @FXML private TextField tfNumeroDocumento;
   @FXML private TextField tfNombreCompleto;
   @FXML private Button btnGuardar;
 
+  @FXML private Button btnAgregar;
   @FXML private TableView<VentaDetalle> table;
   @FXML private TableColumn<VentaDetalle, String> tcCodigo;
   @FXML private TableColumn<VentaDetalle, String> tcDescripcion;
@@ -79,17 +83,9 @@ public class VentaController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    cbTipoDocumento.getItems().addAll(TipoDocumento.values());
+    initUI();
 
-    btnGuardar
-        .disableProperty()
-        .bind(
-            Bindings.isEmpty(dpFechaEmision.getEditor().textProperty())
-                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
-                .or(Bindings.isEmpty(tfNombreCompleto.textProperty()))
-                .or(Bindings.isEmpty(observableList)));
-
-    initTable();
+    bind();
   }
 
   @FXML
@@ -113,13 +109,7 @@ public class VentaController implements Initializable {
           fxmlLoader.<VentaDetalleDialogController>getController();
       controller.setController(this);
 
-      Scene scene = new Scene(parent);
-      Stage stage = new Stage();
-      stage.initModality(Modality.APPLICATION_MODAL);
-      stage.setScene(scene);
-      stage.setTitle("Venta Detalle");
-      stage.setResizable(false);
-      stage.showAndWait();
+      showDialog(parent, "Venta Detalle");
     } catch (IOException ex) {
       Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -128,11 +118,12 @@ public class VentaController implements Initializable {
   @FXML
   private void onActionBtnGuardar(ActionEvent event) {
     String id = tfId.getText().trim();
-    LocalDate fechaEmision = dpFechaEmision.getValue();
-    double total = Double.parseDouble(tfTotal.getText().trim());
 
     if (id.equals("")) {
       try {
+        LocalDate fechaEmision = dpFechaEmision.getValue();
+        double total = Double.parseDouble(tfTotal.getText().trim());
+
         venta = new Venta(fechaEmision, total, Estado.ACTIVO.getCodigo(), persona, observableList);
 
         Long idVenta = ventaDao.create(venta);
@@ -142,12 +133,42 @@ public class VentaController implements Initializable {
       } catch (SQLException ex) {
         Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
       }
+    } else {
+      try {
+        Estado estado = cbEstado.getValue();
+        venta.setEstado(estado.getCodigo());
+
+        ventaDao.update(venta);
+
+        clearUI();
+      } catch (SQLException ex) {
+        Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+  }
+
+  @FXML
+  private void onActionBtnBuscar(ActionEvent event) {
+    try {
+      List<Venta> list = ventaDao.read();
+
+      FXMLLoader fxmlLoader = App.loadFXML("VentaDialog");
+      Parent parent = fxmlLoader.load();
+      VentaDialogController controller = fxmlLoader.<VentaDialogController>getController();
+      controller.setObservableList(list);
+      controller.setController(this);
+
+      showDialog(parent, "Venta");
+    } catch (SQLException | IOException ex) {
+      Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 
   @FXML
   private void onActionBtnLimpiar(ActionEvent event) {
     clearUI();
+
+    bind();
   }
 
   @FXML
@@ -165,31 +186,28 @@ public class VentaController implements Initializable {
   private void onMouseClickedTable(MouseEvent event) {
     if (event.getClickCount() == 2) {
       try {
-        VentaDetalle detalle = (VentaDetalle) table.getSelectionModel().getSelectedItem();
+        VentaDetalle ventaDetalle = (VentaDetalle) table.getSelectionModel().getSelectedItem();
 
-        if (detalle == null) return;
+        if (ventaDetalle == null) return;
 
         FXMLLoader fxmlLoader = App.loadFXML("VentaDetalleDialog");
         Parent parent = fxmlLoader.load();
         VentaDetalleDialogController controller =
             fxmlLoader.<VentaDetalleDialogController>getController();
         controller.setController(this);
-        controller.setDetalle(detalle);
+        controller.setVentaDetalle(ventaDetalle);
 
-        Scene scene = new Scene(parent);
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.setTitle("Venta Detalle");
-        stage.setResizable(false);
-        stage.showAndWait();
+        showDialog(parent, "Venta Detalle");
       } catch (IOException ex) {
         Logger.getLogger(VentaController.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
   }
 
-  private void initTable() {
+  private void initUI() {
+    cbEstado.getItems().addAll(Estado.values());
+    cbTipoDocumento.getItems().addAll(TipoDocumento.values());
+
     tcCodigo.setCellValueFactory(c -> c.getValue().getProducto().getCodigoProperty());
     tcDescripcion.setCellValueFactory(c -> c.getValue().getProducto().getDescripcionProperty());
     tcUnidadMedida.setCellValueFactory(
@@ -214,13 +232,57 @@ public class VentaController implements Initializable {
     venta = null;
     persona = null;
 
+    cbEstado.setDisable(true);
+    dpFechaEmision.setDisable(false);
+    btnBuscarPersona.setDisable(false);
+    cbTipoDocumento.setDisable(false);
+    tfNumeroDocumento.setDisable(false);
+    tfNombreCompleto.setDisable(true);
+    btnAgregar.setDisable(false);
+    table.setDisable(false);
+
+    cbEstado.getSelectionModel().clearSelection();
     tfId.clear();
     dpFechaEmision.setValue(null);
     cbTipoDocumento.getSelectionModel().clearSelection();
     tfNumeroDocumento.clear();
     tfNombreCompleto.clear();
-
     observableList.clear();
+  }
+
+  private void bind() {
+    btnBuscarPersona
+        .disableProperty()
+        .bind(
+            Bindings.isNull(cbTipoDocumento.valueProperty())
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty())));
+
+    btnAgregar
+        .disableProperty()
+        .bind(
+            Bindings.isEmpty(dpFechaEmision.getEditor().textProperty())
+                .or(Bindings.isNull(cbTipoDocumento.valueProperty()))
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
+                .or(Bindings.isEmpty(tfNombreCompleto.textProperty())));
+
+    btnGuardar
+        .disableProperty()
+        .bind(
+            Bindings.isEmpty(dpFechaEmision.getEditor().textProperty())
+                .or(Bindings.isNull(cbTipoDocumento.valueProperty()))
+                .or(Bindings.isEmpty(tfNumeroDocumento.textProperty()))
+                .or(Bindings.isEmpty(tfNombreCompleto.textProperty()))
+                .or(Bindings.isEmpty(observableList)));
+  }
+
+  private void showDialog(Parent parent, String titulo) {
+    Scene scene = new Scene(parent);
+    Stage stage = new Stage();
+    stage.initModality(Modality.APPLICATION_MODAL);
+    stage.setScene(scene);
+    stage.setTitle(titulo);
+    stage.setResizable(false);
+    stage.showAndWait();
   }
 
   public void add(VentaDetalle ventaDetalle) {
@@ -229,5 +291,31 @@ public class VentaController implements Initializable {
 
   public void refresh() {
     table.refresh();
+  }
+
+  public void setVenta(Venta venta) {
+    this.venta = venta;
+
+    btnBuscarPersona.disableProperty().unbind();
+    btnAgregar.disableProperty().unbind();
+
+    cbEstado.setDisable(false);
+    dpFechaEmision.setDisable(true);
+    btnBuscarPersona.setDisable(true);
+    cbTipoDocumento.setDisable(true);
+    tfNumeroDocumento.setDisable(true);
+    tfNombreCompleto.setDisable(true);
+    btnAgregar.setDisable(true);
+    table.setDisable(true);
+
+    cbEstado.getSelectionModel().select(venta.getEstado());
+    tfId.setText(venta.getId().toString());
+    dpFechaEmision.setValue(venta.getFechaEmision());
+    cbTipoDocumento.getSelectionModel().select(venta.getPersona().getTipoDocumento());
+    tfNumeroDocumento.setText(venta.getPersona().getNumeroDocumento());
+    tfNombreCompleto.setText(venta.getPersona().getNombreCompleto());
+
+    observableList.clear();
+    observableList.setAll(venta.getVentaDetalles());
   }
 }

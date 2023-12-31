@@ -22,6 +22,7 @@
                 <ColumnConstraints hgrow="NEVER" />
             </columnConstraints>
             <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
                 <RowConstraints vgrow="NEVER" />
@@ -30,23 +31,26 @@
                 <RowConstraints vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                <Label text="Fecha Emision:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                <Label text="Nombre Completo:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                <HBox alignment="CENTER" spacing="10.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
+            <Label text="Estado:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                <Label text="Id:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <Label text="Fecha Emision:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                <Label text="Tipo Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                <Label text="Numero Documento:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                <Label text="Nombre Completo:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                <HBox alignment="CENTER" spacing="10.0" GridPane.columnSpan="3" GridPane.rowIndex="6">
                     <children>
                         <Button fx:id="btnGuardar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnGuardar" prefHeight="30.0" prefWidth="100.0" text="Guardar" />
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnBuscar" prefHeight="30.0" prefWidth="100.0" text="Buscar" />
                         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnLimpiar" prefHeight="30.0" prefWidth="100.0" text="Limpiar" />
                     </children>
                 </HBox>
-                <TextField fx:id="tfId" disable="true" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" />
-                <DatePicker fx:id="dpFechaEmision" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Fecha Emision" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <TextField fx:id="tfNombreCompleto" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="260.0" promptText="Nombre Completo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
-                <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnBuscarPersona" prefHeight="30.0" prefWidth="100.0" text="Persona" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <ComboBox fx:id="cbEstado" disable="true" prefHeight="30.0" prefWidth="150.0" promptText="Estado" GridPane.columnIndex="1" />
+                <TextField fx:id="tfId" disable="true" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Id" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <DatePicker fx:id="dpFechaEmision" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Fecha Emision" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <ComboBox fx:id="cbTipoDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Tipo documento" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField fx:id="tfNumeroDocumento" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="150.0" promptText="Numero Documento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <TextField fx:id="tfNombreCompleto" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="255.0" promptText="Nombre Completo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+                <Button fx:id="btnBuscarPersona" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnBuscarPersona" prefHeight="30.0" prefWidth="100.0" text="Persona" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             </children>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -63,7 +67,7 @@
                 <RowConstraints vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnAgregar" prefHeight="30.0" prefWidth="100.0" text="Agregar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                <Button fx:id="btnAgregar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onActionBtnAgregar" prefHeight="30.0" prefWidth="100.0" text="Agregar" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
                 <TableView fx:id="table" onKeyPressed="#onKeyPressedTable" onMouseClicked="#onMouseClickedTable" GridPane.columnSpan="2" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="tcCodigo" prefWidth="100.0" text="Codigo" />

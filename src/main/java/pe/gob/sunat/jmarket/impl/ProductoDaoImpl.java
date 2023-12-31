@@ -17,7 +17,7 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public Long create(Producto producto) throws SQLException {
+  public Long create(Producto o) throws SQLException {
     Long id = 0L;
 
     database.connect();
@@ -28,11 +28,11 @@ public class ProductoDaoImpl implements ProductoDao {
     try (PreparedStatement ps =
         database.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-      ps.setString(1, producto.getCodigo());
-      ps.setString(2, producto.getDescripcion());
-      ps.setInt(3, producto.getUnidadMedida());
-      ps.setDouble(4, producto.getPrecioUnitario());
-      ps.setInt(5, producto.getEstado());
+      ps.setString(1, o.getCodigo());
+      ps.setString(2, o.getDescripcion());
+      ps.setInt(3, o.getUnidadMedida());
+      ps.setDouble(4, o.getPrecioUnitario());
+      ps.setInt(5, o.getEstado());
       ps.executeUpdate();
 
       try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -61,6 +61,7 @@ public class ProductoDaoImpl implements ProductoDao {
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setLong(1, id);
+
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           producto =
@@ -114,15 +115,15 @@ public class ProductoDaoImpl implements ProductoDao {
   }
 
   @Override
-  public void update(Producto producto) throws SQLException {
+  public void update(Producto o) throws SQLException {
     database.connect();
 
     String query = "UPDATE PRODUCTO SET PRECIO_UNITARIO = ?, ESTADO = ? WHERE ID = ?";
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
-      ps.setDouble(1, producto.getPrecioUnitario());
-      ps.setInt(2, producto.getEstado());
-      ps.setLong(3, producto.getId());
+      ps.setDouble(1, o.getPrecioUnitario());
+      ps.setInt(2, o.getEstado());
+      ps.setLong(3, o.getId());
 
       ps.executeUpdate();
     }
@@ -157,6 +158,7 @@ public class ProductoDaoImpl implements ProductoDao {
 
     try (PreparedStatement ps = database.getConnection().prepareStatement(query)) {
       ps.setString(1, codigo);
+
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           producto =

@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class VentaDetalle {
   private SimpleObjectProperty<Long> id;
-  private SimpleObjectProperty<Integer> numeroFila;
   private SimpleObjectProperty<Double> precioUnitario;
   private SimpleObjectProperty<Double> cantidad;
   private SimpleObjectProperty<Double> subtotal;
@@ -14,7 +13,6 @@ public class VentaDetalle {
 
   public VentaDetalle(
       Long id,
-      int numeroFila,
       double precioUnitario,
       double cantidad,
       double subtotal,
@@ -22,7 +20,6 @@ public class VentaDetalle {
       Producto producto,
       Venta venta) {
     this.id = new SimpleObjectProperty<>(id);
-    this.numeroFila = new SimpleObjectProperty<>(numeroFila);
     this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
     this.cantidad = new SimpleObjectProperty<>(cantidad);
     this.subtotal = new SimpleObjectProperty<>(subtotal);
@@ -32,14 +29,27 @@ public class VentaDetalle {
   }
 
   public VentaDetalle(
-      int numeroFila,
+      Long id,
+      double precioUnitario,
+      double cantidad,
+      double subtotal,
+      int estado,
+      Producto producto) {
+    this.id = new SimpleObjectProperty<>(id);
+    this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
+    this.cantidad = new SimpleObjectProperty<>(cantidad);
+    this.subtotal = new SimpleObjectProperty<>(subtotal);
+    this.estado = new SimpleObjectProperty<>(estado);
+    this.producto = producto;
+  }
+
+  public VentaDetalle(
       double precioUnitario,
       double cantidad,
       double subtotal,
       int estado,
       Producto producto,
       Venta venta) {
-    this.numeroFila = new SimpleObjectProperty<>(numeroFila);
     this.precioUnitario = new SimpleObjectProperty<>(precioUnitario);
     this.cantidad = new SimpleObjectProperty<>(cantidad);
     this.subtotal = new SimpleObjectProperty<>(subtotal);
@@ -63,14 +73,6 @@ public class VentaDetalle {
 
   public void setId(Long id) {
     this.id.set(id);
-  }
-
-  public int getNumeroFila() {
-    return numeroFila.get();
-  }
-
-  public void setNumeroFila(int numeroFila) {
-    this.numeroFila.set(numeroFila);
   }
 
   public double getPrecioUnitario() {
@@ -125,10 +127,6 @@ public class VentaDetalle {
     return id;
   }
 
-  public SimpleObjectProperty<Integer> getNumeroFilaProperty() {
-    return numeroFila;
-  }
-
   public SimpleObjectProperty<Double> getPrecioUnitarioProperty() {
     return precioUnitario;
   }
@@ -150,8 +148,6 @@ public class VentaDetalle {
     return "VentaDetalle{"
         + "id="
         + id
-        + ", numeroFila="
-        + numeroFila
         + ", precioUnitario="
         + precioUnitario
         + ", cantidad="

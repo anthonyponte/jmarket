@@ -28,7 +28,7 @@ public class VentaDetalleDialogController implements Initializable {
   @FXML private Button btnBuscarProducto;
   @FXML private Button btnGuardar;
 
-  private VentaDetalle detalle;
+  private VentaDetalle ventaDetalle;
   private Producto producto;
   private VentaController controller;
   private ProductoDao dao;
@@ -70,14 +70,14 @@ public class VentaDetalleDialogController implements Initializable {
     double precioUnitario = Double.parseDouble(tfPrecioUnitario.getText().trim());
     double cantidad = Double.parseDouble(tfCantidad.getText().trim());
     double subtotal = precioUnitario * cantidad;
-    if (detalle == null) {
-      detalle =
+    if (ventaDetalle == null) {
+      ventaDetalle =
           new VentaDetalle(precioUnitario, cantidad, subtotal, Estado.ACTIVO.getCodigo(), producto);
 
-      controller.add(detalle);
+      controller.add(ventaDetalle);
     } else {
-      detalle.setCantidad(cantidad);
-      detalle.setSubtotal(subtotal);
+      ventaDetalle.setCantidad(cantidad);
+      ventaDetalle.setSubtotal(subtotal);
 
       controller.refresh();
     }
@@ -86,18 +86,18 @@ public class VentaDetalleDialogController implements Initializable {
     stage.close();
   }
 
-  public void setDetalle(VentaDetalle detalle) {
-    this.detalle = detalle;
+  public void setVentaDetalle(VentaDetalle ventaDetalle) {
+    this.ventaDetalle = ventaDetalle;
 
     tfCodigo.setDisable(true);
     btnBuscarProducto.setDisable(true);
 
-    tfCodigo.setText(detalle.getProducto().getCodigo());
-    tfDescripcion.setText(detalle.getProducto().getDescripcion());
+    tfCodigo.setText(ventaDetalle.getProducto().getCodigo());
+    tfDescripcion.setText(ventaDetalle.getProducto().getDescripcion());
     tfUnidadMedida.setText(
-        UnidadMedida.values()[detalle.getProducto().getUnidadMedida()].getDescripcion());
-    tfPrecioUnitario.setText(String.valueOf(detalle.getPrecioUnitario()));
-    tfCantidad.setText(String.valueOf(detalle.getCantidad()));
+        UnidadMedida.values()[ventaDetalle.getProducto().getUnidadMedida()].getDescripcion());
+    tfPrecioUnitario.setText(String.valueOf(ventaDetalle.getPrecioUnitario()));
+    tfCantidad.setText(String.valueOf(ventaDetalle.getCantidad()));
   }
 
   public void setController(VentaController controller) {

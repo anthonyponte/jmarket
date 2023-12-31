@@ -146,7 +146,13 @@ public class Persona {
   }
 
   public String getNombreCompleto() {
-    return primerNombre + " " + segundoNombre + " " + apellidoPaterno + " " + apellidoMaterno;
+    return primerNombre.get()
+        + " "
+        + segundoNombre.get()
+        + " "
+        + apellidoPaterno.get()
+        + " "
+        + apellidoMaterno.get();
   }
 
   @Override

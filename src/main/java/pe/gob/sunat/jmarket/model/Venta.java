@@ -10,7 +10,7 @@ public class Venta {
   private SimpleObjectProperty<Double> total;
   private SimpleObjectProperty<Integer> estado;
   private Persona persona;
-  private List<VentaDetalle> detalles;
+  private List<VentaDetalle> ventaDetalles;
 
   public Venta(
       Long id,
@@ -18,13 +18,21 @@ public class Venta {
       double total,
       int estado,
       Persona persona,
-      List<VentaDetalle> detalles) {
+      List<VentaDetalle> ventaDetalles) {
     this.id = new SimpleObjectProperty<>(id);
     this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
     this.total = new SimpleObjectProperty<>(total);
     this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
-    this.detalles = detalles;
+    this.ventaDetalles = ventaDetalles;
+  }
+
+  public Venta(Long id, LocalDate fechaEmision, double total, int estado, Persona persona) {
+    this.id = new SimpleObjectProperty<>(id);
+    this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
+    this.total = new SimpleObjectProperty<>(total);
+    this.estado = new SimpleObjectProperty<>(estado);
+    this.persona = persona;
   }
 
   public Venta(
@@ -32,12 +40,19 @@ public class Venta {
       double total,
       int estado,
       Persona persona,
-      List<VentaDetalle> detalles) {
+      List<VentaDetalle> ventaDetalles) {
     this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
     this.total = new SimpleObjectProperty<>(total);
     this.estado = new SimpleObjectProperty<>(estado);
     this.persona = persona;
-    this.detalles = detalles;
+    this.ventaDetalles = ventaDetalles;
+  }
+
+  public Venta(LocalDate fechaEmision, double total, int estado, Persona persona) {
+    this.fechaEmision = new SimpleObjectProperty<>(fechaEmision);
+    this.total = new SimpleObjectProperty<>(total);
+    this.estado = new SimpleObjectProperty<>(estado);
+    this.persona = persona;
   }
 
   public Long getId() {
@@ -80,12 +95,12 @@ public class Venta {
     this.persona = persona;
   }
 
-  public List<VentaDetalle> getDetalles() {
-    return detalles;
+  public List<VentaDetalle> getVentaDetalles() {
+    return ventaDetalles;
   }
 
-  public void setDetalles(List<VentaDetalle> detalles) {
-    this.detalles = detalles;
+  public void setVentaDetalles(List<VentaDetalle> ventaDetalles) {
+    this.ventaDetalles = ventaDetalles;
   }
 
   public SimpleObjectProperty<Long> getIdProperty() {
@@ -117,8 +132,8 @@ public class Venta {
         + estado
         + ", persona="
         + persona
-        + ", detalles="
-        + detalles
+        + ", ventaDetalles="
+        + ventaDetalles
         + '}';
   }
 }
