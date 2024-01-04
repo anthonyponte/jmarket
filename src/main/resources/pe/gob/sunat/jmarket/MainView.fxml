@@ -14,10 +14,11 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="Menu">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onActionMiPersona" text="Persona" />
-                                <MenuItem mnemonicParsing="false" onAction="#onActionMiUsuario" text="Usuario" />
-                                <MenuItem mnemonicParsing="false" onAction="#onActionMiProducto" text="Producto" />
-                                <MenuItem mnemonicParsing="false" onAction="#onActionMiVenta" text="Venta" />
+                        <MenuItem fx:id="miDashboard" mnemonicParsing="false" onAction="#onActionMenuItem" text="Dashboard" />
+                                <MenuItem fx:id="miPersona" mnemonicParsing="false" onAction="#onActionMenuItem" text="Persona" />
+                                <MenuItem fx:id="miUsuario" mnemonicParsing="false" onAction="#onActionMenuItem" text="Usuario" />
+                                <MenuItem fx:id="miProducto" mnemonicParsing="false" onAction="#onActionMenuItem" text="Producto" />
+                                <MenuItem fx:id="miVenta" mnemonicParsing="false" onAction="#onActionMenuItem" text="Venta" />
                             </items>
                         </Menu>
                     </menus>

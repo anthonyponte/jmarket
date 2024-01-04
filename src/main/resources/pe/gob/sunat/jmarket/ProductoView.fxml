@@ -29,7 +29,7 @@
                 <RowConstraints vgrow="NEVER" />
             </rowConstraints>
             <children>
-            <Label text="Estado:" />
+            <Label text="Estado:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
                 <Label text="Id:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                 <Label text="Codigo:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                 <Label text="Descripcion:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />

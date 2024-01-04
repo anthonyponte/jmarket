@@ -155,6 +155,10 @@ public class Persona {
         + apellidoMaterno.get();
   }
 
+  public String getNombreApellido() {
+    return primerNombre.get() + " " + apellidoPaterno.get();
+  }
+
   @Override
   public String toString() {
     return "Persona{"

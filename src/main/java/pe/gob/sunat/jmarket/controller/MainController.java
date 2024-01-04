@@ -11,75 +11,65 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import pe.gob.sunat.jmarket.App;
 import pe.gob.sunat.jmarket.model.Usuario;
 
 public class MainController implements Initializable {
-  @FXML private BorderPane bpMain;
+  @FXML private MenuItem miDashboard;
+  @FXML private MenuItem miPersona;
+  @FXML private MenuItem miUsuario;
+  @FXML private MenuItem miProducto;
+  @FXML private MenuItem miVenta;
   @FXML private Menu mnUsuario;
+  @FXML private BorderPane bpMain;
 
   @Override
-  public void initialize(URL url, ResourceBundle rb) {}
-
-  @FXML
-  private void onActionMiPersona(ActionEvent event) {
+  public void initialize(URL url, ResourceBundle rb) {
     try {
-      FXMLLoader fXMLLoader = App.loadFXML("PersonaView");
+      FXMLLoader fXMLLoader = App.loadFXML("DashboardView");
       Parent parent = fXMLLoader.load();
-      fXMLLoader.<UsuarioController>getController();
-      setCenter(parent, "JMarket - Persona");
+      fXMLLoader.<DashboardController>getController();
+      bpMain.setCenter(parent);
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 
   @FXML
-  private void onActionMiUsuario(ActionEvent event) {
+  private void onActionMenuItem(ActionEvent event) {
     try {
-      FXMLLoader fXMLLoader = App.loadFXML("UsuarioView");
-      Parent parent = fXMLLoader.load();
-      fXMLLoader.<UsuarioController>getController();
-      setCenter(parent, "JMarket - Usuario");
+      MenuItem menuItem = (MenuItem) event.getSource();
+      Parent parent = null;
+      if (miDashboard == menuItem) {
+        FXMLLoader fXMLLoader = App.loadFXML("DashboardView");
+        parent = fXMLLoader.load();
+        fXMLLoader.<DashboardController>getController();
+      } else if (miPersona == menuItem) {
+        FXMLLoader fXMLLoader = App.loadFXML("PersonaView");
+        parent = fXMLLoader.load();
+        fXMLLoader.<UsuarioController>getController();
+      } else if (miUsuario == menuItem) {
+        FXMLLoader fXMLLoader = App.loadFXML("UsuarioView");
+        parent = fXMLLoader.load();
+        fXMLLoader.<UsuarioController>getController();
+      } else if (miProducto == menuItem) {
+        FXMLLoader fXMLLoader = App.loadFXML("ProductoView");
+        parent = fXMLLoader.load();
+        fXMLLoader.<ProductoController>getController();
+      } else if (miVenta == menuItem) {
+        FXMLLoader fXMLLoader = App.loadFXML("VentaView");
+        parent = fXMLLoader.load();
+        fXMLLoader.<ProductoController>getController();
+      }
+      bpMain.setCenter(parent);
     } catch (IOException ex) {
       Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
     }
-  }
-
-  @FXML
-  private void onActionMiProducto(ActionEvent event) {
-    try {
-      FXMLLoader fXMLLoader = App.loadFXML("ProductoView");
-      Parent parent = fXMLLoader.load();
-      fXMLLoader.<ProductoController>getController();
-      setCenter(parent, "JMarket - Producto");
-    } catch (IOException ex) {
-      Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-    }
-  }
-
-  @FXML
-  private void onActionMiVenta(ActionEvent event) {
-    try {
-      FXMLLoader fXMLLoader = App.loadFXML("VentaView");
-      Parent parent = fXMLLoader.load();
-      fXMLLoader.<ProductoController>getController();
-      setCenter(parent, "JMarket - Venta");
-    } catch (IOException ex) {
-      Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-    }
-  }
-
-  private void setCenter(Parent parent, String title) {
-    bpMain.setCenter(parent);
-    Stage stage = (Stage) bpMain.getScene().getWindow();
-    stage.setTitle(title);
   }
 
   public void setUsuario(Usuario usuario) {
-    String nombre =
-        usuario.getPersona().getPrimerNombre() + " " + usuario.getPersona().getApellidoPaterno();
-    mnUsuario.setText(nombre);
+    mnUsuario.setText(usuario.getPersona().getNombreApellido());
   }
 }
