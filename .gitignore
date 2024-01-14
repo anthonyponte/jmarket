@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/java,maven
-# Edit at https://www.toptal.com/developers/gitignore?templates=java,maven
+# Created by https://www.toptal.com/developers/gitignore/api/java,netbeans,maven
+# Edit at https://www.toptal.com/developers/gitignore?templates=java,netbeans,maven
 
 ### Java ###
 # Compiled class file
@@ -45,8 +45,15 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-.settings
 
-!hsqldb/bin/hsqldb.jar
+### NetBeans ###
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 
-# End of https://www.toptal.com/developers/gitignore/api/java,maven
+# End of https://www.toptal.com/developers/gitignore/api/java,netbeans,maven
